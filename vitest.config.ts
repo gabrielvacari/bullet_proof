@@ -12,11 +12,6 @@ export default defineConfig({
     globals: true,
     include: ['**/*.{test,spec}.ts'],
 
-    // TEMPORARY -- remove at M0, when the first real test lands.
-    // There is no source code yet, so an empty suite is the honest state.
-    // Leaving this on permanently would let a suite that lost all its tests
-    // pass CI silently. Tracked as Q-008.
-    passWithNoTests: true,
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov', 'html'],
@@ -27,6 +22,11 @@ export default defineConfig({
       include: ['shared/**/*.ts', 'server/**/*.ts', 'client/**/*.ts'],
       exclude: [
         'client/render/**', // real WebGL required
+        // Thin DOM shells: they bind listeners and call into pure modules that ARE
+        // tested (client/input/aim.ts, client/input/keys.ts, client/boot/loop.ts).
+        // Testing them would amount to testing the browser's event dispatch.
+        'client/input/pointer-lock.ts',
+        'client/boot/main.ts',
         '**/*.d.ts',
         '**/*.{test,spec}.ts',
         '**/__fixtures__/**',
