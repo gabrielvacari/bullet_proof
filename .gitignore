@@ -7,3 +7,10 @@ coverage/
 .env.local
 .vscode/
 .idea/
+
+# Spec Kit and agent state.
+# The shared parts -- .specify/ templates, scripts, memory/constitution.md, and the
+# .claude/skills/ commands -- ARE committed; they are how work happens here.
+# These are per-machine or credential-bearing and are not.
+.claude/settings.local.json
+.claude/.credentials.json

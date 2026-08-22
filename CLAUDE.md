@@ -58,14 +58,22 @@ Full detail in [CONTRIBUTING.md](CONTRIBUTING.md). The short version:
   Product decisions go in
   [10-decision-log.md](requirements/10-decision-log.md).
 
-## Spec Kit — not in use yet
+## Spec Kit — the primary workflow
 
-Spec Kit is **not set up in this repository**. There is no `.specify/` directory, and no
-Spec Kit workflow is active. Do not run `specify init` or any `/specify`, `/plan`, or
-`/tasks` command unless the project owner explicitly asks.
+Spec Kit **is** how work happens here. One feature directory per milestone under
+[`specs/`](specs/), driven by `/speckit-specify` → `/speckit-plan` → `/speckit-tasks` →
+`/speckit-implement`. Each phase stops for the project owner's review; do not advance on
+your own judgement.
 
-If it is adopted later, the relationship is one-directional: `requirements/` stays the
-source of truth, and generated specs cite requirement IDs rather than restating them.
+Read [`.specify/memory/constitution.md`](.specify/memory/constitution.md) before planning
+or implementing. It is binding, and it encodes the rules above so that a plan cannot
+quietly violate them.
+
+**The relationship is one-directional.** `requirements/` stays the source of truth; a spec
+**cites** requirement IDs and never restates them. In particular, the Spec Kit templates
+mint `FR-001` and `SC-001` — **this project does not use them.** Those namespaces are
+already taken (`FR-GP-*`, `NFR-*`, `NET-*`, `SC-1`…`SC-5`) and only `requirements/` mints
+them. A spec's own exit criteria are numbered `M<N>-<n>`.
 
 ## Traps specific to this project
 

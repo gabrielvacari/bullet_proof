@@ -37,14 +37,16 @@ require touching game logic (`SC-4`).
 
 ## Movement
 
-| Constant        | Value        | Status   | Notes                                                   |
-| --------------- | ------------ | -------- | ------------------------------------------------------- |
-| `WALK_SPEED`    | `5.0 m/s`    | PROPOSED |                                                         |
-| `SPRINT_SPEED`  | `8.0 m/s`    | PROPOSED | Forward-dominant movement only                          |
-| `CROUCH_SPEED`  | `2.5 m/s`    | PROPOSED |                                                         |
-| `JUMP_VELOCITY` | `6.0 m/s`    | PROPOSED | Gives roughly a 1.8 m apex with the gravity below       |
-| `GRAVITY`       | `-20.0 m/s²` | PROPOSED | Deliberately stronger than real gravity — snappier arcs |
-| `AIR_CONTROL`   | `0.3`        | PROPOSED | Fraction of ground acceleration applicable mid-air      |
+| Constant                 | Value                | Status   | Notes                                                                                                                                                                                       |
+| ------------------------ | -------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `WALK_SPEED`             | `5.0 m/s`            | PROPOSED |                                                                                                                                                                                             |
+| `SPRINT_SPEED`           | `8.0 m/s`            | PROPOSED | Forward-dominant movement only                                                                                                                                                              |
+| `CROUCH_SPEED`           | `2.5 m/s`            | PROPOSED |                                                                                                                                                                                             |
+| `JUMP_VELOCITY`          | `6.0 m/s`            | PROPOSED | Gives roughly a 1.8 m apex with the gravity below                                                                                                                                           |
+| `GRAVITY`                | `-20.0 m/s²`         | PROPOSED | Deliberately stronger than real gravity — snappier arcs                                                                                                                                     |
+| `AIR_CONTROL`            | `0.3`                | PROPOSED | Fraction of ground acceleration applicable mid-air                                                                                                                                          |
+| `SPRINT_FORWARD_MIN_DOT` | `0.7071067811865476` | PROPOSED | `cos 45°` — sprint applies while the movement input's dot with forward is at least this. Stored as a cosine, not an angle, because ADR-0001 bars trigonometry from the simulation — `D-017` |
+| `GROUND_PROBE_DISTANCE`  | `0.05 m`             | PROPOSED | Downward probe below the capsule that defines grounded — `FR-GP-017`                                                                                                                        |
 
 ## Weapon
 
@@ -69,14 +71,15 @@ require touching game logic (`SC-4`).
 
 ## Networking
 
-| Constant                | Value    | Status   | Notes                                      |
-| ----------------------- | -------- | -------- | ------------------------------------------ |
-| `SERVER_TICK_HZ`        | `30`     | PROPOSED | Fixed simulation step (33.33 ms)           |
-| `SNAPSHOT_HZ`           | `20`     | PROPOSED | Broadcast rate                             |
-| `INTERPOLATION_DELAY`   | `100 ms` | PROPOSED | ≈ 2 snapshot intervals — `NFR-008`         |
-| `MAX_INPUTS_PER_SECOND` | `70`     | PROPOSED | Above 60 fps to allow headroom — `NFR-010` |
-| `MAX_QUEUED_INPUTS`     | `10`     | PROPOSED | Per client, per tick queue depth           |
-| `MAX_MESSAGE_BYTES`     | `1024`   | PROPOSED | Inbound message size cap                   |
+| Constant                | Value    | Status   | Notes                                                                  |
+| ----------------------- | -------- | -------- | ---------------------------------------------------------------------- |
+| `SERVER_TICK_HZ`        | `30`     | PROPOSED | Fixed simulation step (33.33 ms)                                       |
+| `SNAPSHOT_HZ`           | `20`     | PROPOSED | Broadcast rate                                                         |
+| `INTERPOLATION_DELAY`   | `100 ms` | PROPOSED | ≈ 2 snapshot intervals — `NFR-008`                                     |
+| `MAX_INPUTS_PER_SECOND` | `70`     | PROPOSED | Above 60 fps to allow headroom — `NFR-010`                             |
+| `MAX_QUEUED_INPUTS`     | `10`     | PROPOSED | Per client, per tick queue depth                                       |
+| `MAX_MESSAGE_BYTES`     | `1024`   | PROPOSED | Inbound message size cap                                               |
+| `AIM_EPSILON`           | `0.001`  | PROPOSED | Tolerance when validating that `input.dir` is unit length — `NET-004c` |
 
 ## Identity & input
 
@@ -88,17 +91,19 @@ require touching game logic (`SC-4`).
 
 ## Camera & client
 
-| Constant                    | Value              | Status   | Notes                                             |
-| --------------------------- | ------------------ | -------- | ------------------------------------------------- |
-| `CAMERA_OFFSET`             | `[0.6, 1.7, -3.0]` | PROPOSED | Right, up, back — over the shoulder               |
-| `CAMERA_PITCH_MIN`          | `-1.2 rad`         | PROPOSED | ≈ -69°                                            |
-| `CAMERA_PITCH_MAX`          | `+0.9 rad`         | PROPOSED | ≈ +52°                                            |
-| `MOUSE_SENSITIVITY_DEFAULT` | `0.002 rad/px`     | PROPOSED |                                                   |
-| `NAMEPLATE_LOS_CHECK_HZ`    | `10`               | PROPOSED | Occlusion raycast rate — `FR-GP-048`              |
-| `TARGET_FPS`                | `60`               | PROPOSED | `NFR-014`                                         |
-| `MIN_VIEWPORT_WIDTH`        | `1024 px`          | PROPOSED | Below this the game refuses to load — `FR-UI-014` |
-| `KILL_FEED_MAX_ENTRIES`     | `5`                | PROPOSED |                                                   |
-| `KILL_FEED_ENTRY_TTL`       | `6 s`              | PROPOSED |                                                   |
+| Constant                          | Value                                        | Status   | Notes                                                                                                                                                                                |
+| --------------------------------- | -------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `CAMERA_OFFSET`                   | `[0.6, 1.7, -3.0]`                           | PROPOSED | Right, up, back — over the shoulder                                                                                                                                                  |
+| `CAMERA_PITCH_MIN`                | `-1.2 rad`                                   | PROPOSED | ≈ -69°                                                                                                                                                                               |
+| `CAMERA_PITCH_MAX`                | `+0.9 rad`                                   | PROPOSED | ≈ +52°                                                                                                                                                                               |
+| `AIM_DIR_Y_MIN` / `AIM_DIR_Y_MAX` | `-0.9320390859672263` / `0.7833269096274834` | PROPOSED | `sin(CAMERA_PITCH_MIN)` / `sin(CAMERA_PITCH_MAX)` — the vertical component `input.dir` may take. Stored as sines because ADR-0001 bars trigonometry from the simulation — `NET-004c` |
+| `MOUSE_SENSITIVITY_DEFAULT`       | `0.002 rad/px`                               | PROPOSED |                                                                                                                                                                                      |
+| `NAMEPLATE_LOS_CHECK_HZ`          | `10`                                         | PROPOSED | Occlusion raycast rate — `FR-GP-048`                                                                                                                                                 |
+| `TARGET_FPS`                      | `60`                                         | PROPOSED | `NFR-014`                                                                                                                                                                            |
+| `MIN_VIEWPORT_WIDTH`              | `1024 px`                                    | PROPOSED | Below this the game refuses to load — `FR-UI-014`                                                                                                                                    |
+| `KILL_FEED_MAX_ENTRIES`           | `5`                                          | PROPOSED |                                                                                                                                                                                      |
+| `KILL_FEED_ENTRY_TTL`             | `6 s`                                        | PROPOSED |                                                                                                                                                                                      |
+| `MAX_SUBSTEPS_PER_FRAME`          | `5`                                          | PROPOSED | Cap on simulation ticks consumed per rendered frame; surplus accumulated time is discarded, not simulated                                                                            |
 
 ---
 

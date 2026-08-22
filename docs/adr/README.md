@@ -49,4 +49,6 @@ Other candidates are in
 
 ## Index
 
-No ADRs yet. The first real decision takes number `0001`.
+| ADR                                                             | Status   | Subject                                                          |
+| --------------------------------------------------------------- | -------- | ---------------------------------------------------------------- |
+| [0001](0001-aim-enters-the-simulation-as-a-direction-vector.md) | Accepted | Aim reaches the simulation as a direction vector, never an angle |

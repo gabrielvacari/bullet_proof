@@ -48,10 +48,22 @@ Server responds with `joined` or `error`. Sending `join` twice on one socket is 
   "t": "input",
   "seq": 1042, // monotonically increasing, per-connection
   "keys": 27, // bitmask: 1=fwd 2=back 4=left 8=right 16=jump 32=sprint 64=crouch 128=fire 256=reload
-  "yaw": 1.5708, // radians, aim direction
-  "pitch": -0.21, // radians, clamped server-side to CAMERA_PITCH_MIN..MAX
+  "dir": [0.0, -0.208, -0.978], // unit vector, aim direction — see ADR-0001
 }
 ```
+
+**NET-004c** — Aim is a **normalised direction vector**, not `yaw`/`pitch` angles. The
+server validates that all three components are finite and that the vector's length is 1
+within an epsilon before it reaches game logic (`NFR-011`); a non-unit vector would
+otherwise buy the sender a speed advantage. Pitch limits (`CAMERA_PITCH_MIN`..`MAX`) are
+enforced by clamping the vector's vertical component server-side.
+
+The simulation never converts an angle, because ECMA-262 leaves `Math.sin`/`Math.cos`
+implementation-approximated and this project runs the same simulation on Node and on three
+different browser engines. Full reasoning in
+[ADR-0001](../docs/adr/0001-aim-enters-the-simulation-as-a-direction-vector.md); it is what
+makes `NFR-003`'s bit-identity criterion achievable. Snapshots (`NET-009`) still carry
+`y`/`pt` for rendering — those never feed the simulation.
 
 **NET-004a** — The server never uses a client-supplied delta time. Each `input` advances
 the player by exactly one fixed server tick. Inputs arriving faster than the tick rate are
