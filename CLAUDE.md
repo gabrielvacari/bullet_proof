@@ -51,7 +51,10 @@ Full detail in [CONTRIBUTING.md](CONTRIBUTING.md). The short version:
 - **Tests:** coverage targets are per directory, not global —
   100% in `shared/`, 90% in `server/` and `client/net/`, `client/render/` excluded.
 - **TypeScript `strict`.** No `any`, no `@ts-ignore` without a justifying comment.
-- **Technical decisions** become numbered ADRs in [`docs/adr/`](docs/adr/README.md).
+- **Significant architecture decisions** become numbered ADRs in
+  [`docs/adr/`](docs/adr/README.md) — the simulation, the protocol, the authority model,
+  aim conventions. Process and tooling are rules in [CONTRIBUTING.md](CONTRIBUTING.md), not
+  ADRs. Anything with a requirement ID stays in `requirements/`.
   Product decisions go in
   [10-decision-log.md](requirements/10-decision-log.md).
 
