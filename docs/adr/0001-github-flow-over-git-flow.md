@@ -19,6 +19,7 @@ scenario where two versions are in flight at once.
 ## Options considered
 
 ### Option A — Full Git Flow
+
 `main` + `develop` + `feature/*` + `release/*` + `hotfix/*`.
 
 Cost: two permanently divergent long-lived branches, and a ceremonial `release/*` merge per
@@ -27,6 +28,7 @@ milestone that protects against nothing, because there is no production version 
 Benefit: demonstrates familiarity with the model on a portfolio repository.
 
 ### Option B — GitHub Flow
+
 `main` protected, short-lived `feature/*` branches, PR, squash merge.
 
 Cost: no separation between "stable" and "in progress" beyond `main` itself — which means
@@ -35,6 +37,7 @@ Cost: no separation between "stable" and "in progress" beyond `main` itself — 
 Benefit: linear readable history; CI gate on every change; no branch bookkeeping.
 
 ### Option C — Simplified Git Flow
+
 `main` + `develop` + `feature/*`, without `release/*` and `hotfix/*`.
 
 Middle ground, but `develop` still duplicates what a protected `main` plus CI already

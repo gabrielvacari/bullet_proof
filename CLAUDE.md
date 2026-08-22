@@ -9,15 +9,15 @@ Portfolio project — see [requirements/01-vision.md](requirements/01-vision.md)
 Do not infer requirements from code, and do not invent them. Every requirement has a stable
 ID (`FR-GP-026`, `NFR-003`, `NET-009`).
 
-| Question | Document |
-|----------|----------|
-| What are the rules of the game? | [02-gameplay.md](requirements/02-gameplay.md) |
-| What number should this be? | [07-constants.md](requirements/07-constants.md) — **the only place numbers live** |
-| What message does the server send? | [06-network-protocol.md](requirements/06-network-protocol.md) |
-| Should I build this at all? | [09-out-of-scope.md](requirements/09-out-of-scope.md) |
-| Why is it like this? | [10-decision-log.md](requirements/10-decision-log.md) |
-| What is undecided? | [11-open-questions.md](requirements/11-open-questions.md) |
-| What comes next? | [08-roadmap.md](requirements/08-roadmap.md) |
+| Question                           | Document                                                                          |
+| ---------------------------------- | --------------------------------------------------------------------------------- |
+| What are the rules of the game?    | [02-gameplay.md](requirements/02-gameplay.md)                                     |
+| What number should this be?        | [07-constants.md](requirements/07-constants.md) — **the only place numbers live** |
+| What message does the server send? | [06-network-protocol.md](requirements/06-network-protocol.md)                     |
+| Should I build this at all?        | [09-out-of-scope.md](requirements/09-out-of-scope.md)                             |
+| Why is it like this?               | [10-decision-log.md](requirements/10-decision-log.md)                             |
+| What is undecided?                 | [11-open-questions.md](requirements/11-open-questions.md)                         |
+| What comes next?                   | [08-roadmap.md](requirements/08-roadmap.md)                                       |
 
 ## Rules
 

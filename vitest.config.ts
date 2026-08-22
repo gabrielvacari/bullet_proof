@@ -11,6 +11,12 @@ export default defineConfig({
   test: {
     globals: true,
     include: ['**/*.{test,spec}.ts'],
+
+    // TEMPORARY -- remove at M0, when the first real test lands.
+    // There is no source code yet, so an empty suite is the honest state.
+    // Leaving this on permanently would let a suite that lost all its tests
+    // pass CI silently. Tracked as Q-008.
+    passWithNoTests: true,
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov', 'html'],

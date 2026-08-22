@@ -5,6 +5,7 @@
 ## Screens
 
 ### FR-UI-001 — Start screen
+
 **Status:** REQUIRED
 **Statement:** The entry screen collects a nickname, a game mode, and a join action, and
 nothing else.
@@ -14,6 +15,7 @@ tutorial, no settings, no login.
 **Rationale:** `SC-1` — ten seconds from page open to first shot.
 
 ### FR-UI-002 — Loading state
+
 **Status:** REQUIRED
 **Statement:** While 3D assets load, the player sees a determinate progress indicator, not
 a blank canvas or a frozen page.
@@ -21,6 +23,7 @@ a blank canvas or a frozen page.
 displayed as a percentage.
 
 ### FR-UI-003 — In-game screen
+
 **Status:** REQUIRED
 **Statement:** During play the viewport is the 3D scene plus the HUD; no browser chrome,
 scrollbars, or page scrolling.
@@ -28,6 +31,7 @@ scrollbars, or page scrolling.
 without distorting the aspect ratio.
 
 ### FR-UI-004 — Results screen
+
 **Status:** REQUIRED
 **Statement:** At match end an overlay shows final standings, the winner, and a countdown
 to the next match.
@@ -39,12 +43,14 @@ score descending.
 ## HUD
 
 ### FR-UI-005 — Health display
+
 **Status:** REQUIRED
 **Statement:** Current health is always visible during play.
 **Acceptance:** Updates within one snapshot of taking damage. Displays a numeric value; a
 bar is optional.
 
 ### FR-UI-006 — Ammo display
+
 **Status:** REQUIRED
 **Statement:** Rounds remaining in the magazine are always visible, and reloading is
 visibly indicated.
@@ -52,6 +58,7 @@ visibly indicated.
 indicator lasting exactly {RELOAD_TIME}.
 
 ### FR-UI-007 — Crosshair
+
 **Status:** REQUIRED
 **Statement:** A crosshair marks where shots will land.
 **Acceptance:** The crosshair position corresponds to the actual aim ray. Because the
@@ -60,6 +67,7 @@ camera is offset from the character (`FR-GP-019`), the crosshair must reflect th
 wrong point. Document the chosen approach in the ADR.
 
 ### FR-UI-008 — Hit feedback
+
 **Status:** REQUIRED
 **Statement:** The player receives immediate feedback when they land a hit and when they
 take damage.
@@ -67,6 +75,7 @@ take damage.
 directional damage indicator or screen flash.
 
 ### FR-UI-009 — Kill feed
+
 **Status:** REQUIRED
 **Statement:** Recent kills appear as a list of `<killer> killed <victim>` entries.
 **Acceptance:** Entries appear within one snapshot of the kill and disappear after
@@ -74,6 +83,7 @@ directional damage indicator or screen flash.
 are coloured by team. Nicknames are rendered as text, never as HTML — see `NFR-012`.
 
 ### FR-UI-010 — Scoreboard
+
 **Status:** REQUIRED
 **Statement:** Holding `Tab` shows a scoreboard with every player's nickname, kills, and
 deaths, sorted by kills descending; TDM additionally shows team totals and groups players
@@ -82,6 +92,7 @@ by team.
 continues to run behind it.
 
 ### FR-UI-011 — Match status
+
 **Status:** REQUIRED
 **Statement:** Remaining match time and the current score relative to the frag limit are
 always visible.
@@ -89,12 +100,14 @@ always visible.
 not by a purely local clock — it must resynchronise from each snapshot.
 
 ### FR-UI-012 — Respawn overlay
+
 **Status:** REQUIRED
 **Statement:** While dead, the player sees who killed them and a countdown to respawn.
 **Acceptance:** The countdown reflects {RESPAWN_DELAY} and reaches zero exactly as the
 player respawns.
 
 ### FR-UI-013 — Connection state
+
 **Status:** REQUIRED
 **Statement:** The player is told when the connection is lost.
 **Acceptance:** A socket close shows a clear "Disconnected" overlay with a button
@@ -102,6 +115,7 @@ returning to the start screen. Per `FR-GP-040`, there is no automatic rejoin int
 match.
 
 ### FR-UI-014 — Unsupported environment
+
 **Status:** REQUIRED
 **Statement:** On a viewport narrower than {MIN_VIEWPORT_WIDTH} px, or without WebGL2, the
 game does not load and shows an explanatory message.
@@ -109,6 +123,7 @@ game does not load and shows an explanatory message.
 downloads the 3D assets.
 
 ### FR-UI-015 — Settings menu
+
 **Status:** DEFERRED
 **Statement:** An in-game menu for mouse sensitivity, volume, and graphics quality.
 **Rationale:** Not required for v1. Constants live in code
@@ -116,6 +131,7 @@ downloads the 3D assets.
 `FR-UI-017`.
 
 ### FR-UI-016 — Text chat
+
 **Status:** DROPPED
 **Rationale:** Low value for a portfolio piece, and an untrusted-input surface (XSS,
 moderation) with no offsetting benefit. Explicitly rejected. See
@@ -126,6 +142,7 @@ moderation) with no offsetting benefit. Explicitly rejected. See
 ## Audio
 
 ### FR-UI-017 — Simple 2D audio
+
 **Status:** REQUIRED
 **Statement:** The game plays non-positional (2D) sound effects for: firing, reloading,
 taking damage, dealing a killing blow, and dying.
@@ -136,12 +153,14 @@ later upgrade — footsteps are the single most valuable positional cue in a sho
 2D audio ships first.
 
 ### FR-UI-018 — Audio requires a gesture
+
 **Status:** REQUIRED
 **Statement:** The `AudioContext` is created or resumed only after a user gesture.
 **Acceptance:** No browser autoplay warning appears in the console; audio works reliably
 from the first shot.
 
 ### FR-UI-019 — Mute control
+
 **Status:** PROPOSED
 **Statement:** A key toggles all audio on and off.
 **Acceptance:** The toggle takes effect immediately and its state persists per
@@ -155,12 +174,14 @@ from the first shot.
 server-side player record. All stored data is per-browser, per-device, and untrusted.
 
 ### FR-UI-020 — Remember nickname
+
 **Status:** REQUIRED
 **Statement:** The last used nickname is stored and pre-fills the start screen on the next
 visit.
 **Acceptance:** After playing once and reloading, the nickname field is already filled.
 
 ### FR-UI-021 — Remember last room code
+
 **Status:** REQUIRED
 **Statement:** The most recently used private room code is stored and offered as a
 one-click rejoin on the start screen.
@@ -168,6 +189,7 @@ one-click rejoin on the start screen.
 `X7K2`. The entry is cleared if the server reports the room no longer exists.
 
 ### FR-UI-022 — Local career stats
+
 **Status:** REQUIRED
 **Statement:** Cumulative kills, deaths, and matches played are stored locally and shown
 on the start screen.
@@ -177,6 +199,7 @@ never sent to the server, are trivially editable by the player, and must never b
 presented as a leaderboard or compared between players.
 
 ### FR-UI-023 — Storage schema is versioned
+
 **Status:** PROPOSED
 **Statement:** All `localStorage` data lives under a single namespaced key containing a
 schema version field.
@@ -184,6 +207,7 @@ schema version field.
 and starts fresh rather than crashing.
 
 ### FR-UI-024 — Storage access is defensive
+
 **Status:** REQUIRED
 **Statement:** Every read and write to `localStorage` is wrapped in `try/catch` and the
 game works correctly when storage is unavailable or returns garbage.

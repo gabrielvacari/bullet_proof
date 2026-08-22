@@ -32,12 +32,18 @@ export default tseslint.config(
         'error',
         {
           patterns: [
-            { group: ['@client/*', '@server/*', '../client/*', '../server/*'],
-              message: 'shared/ must not import from client/ or server/ (NFR-003).' },
-            { group: ['three', 'three/*'],
-              message: 'shared/ must not depend on the renderer (NFR-003).' },
-            { group: ['node:*', 'fs', 'path', 'http', 'ws'],
-              message: 'shared/ must run in the browser too (NFR-003).' },
+            {
+              group: ['@client/*', '@server/*', '../client/*', '../server/*'],
+              message: 'shared/ must not import from client/ or server/ (NFR-003).',
+            },
+            {
+              group: ['three', 'three/*'],
+              message: 'shared/ must not depend on the renderer (NFR-003).',
+            },
+            {
+              group: ['node:*', 'fs', 'path', 'http', 'ws'],
+              message: 'shared/ must run in the browser too (NFR-003).',
+            },
           ],
         },
       ],
@@ -49,10 +55,16 @@ export default tseslint.config(
       ],
       'no-restricted-properties': [
         'error',
-        { object: 'Date', property: 'now',
-          message: 'The simulation must not read wall-clock time (NFR-004).' },
-        { object: 'Math', property: 'random',
-          message: 'The simulation must be deterministic; seed it outside sim (NFR-004).' },
+        {
+          object: 'Date',
+          property: 'now',
+          message: 'The simulation must not read wall-clock time (NFR-004).',
+        },
+        {
+          object: 'Math',
+          property: 'random',
+          message: 'The simulation must be deterministic; seed it outside sim (NFR-004).',
+        },
       ],
     },
   },
@@ -66,14 +78,30 @@ export default tseslint.config(
     rules: {
       'no-magic-numbers': [
         'warn',
-        { ignore: [0, 1, -1, 2], ignoreArrayIndexes: true, enforceConst: true,
-          detectObjects: false },
+        {
+          ignore: [0, 1, -1, 2],
+          ignoreArrayIndexes: true,
+          enforceConst: true,
+          detectObjects: false,
+        },
       ],
     },
   },
 
+  /**
+   * Config files at the repo root are plain JS and are not part of the
+   * TypeScript project, so the type-aware rules cannot resolve them.
+   */
+  {
+    files: ['**/*.js', '**/*.mjs'],
+    extends: [tseslint.configs.disableTypeChecked],
+  },
+
   {
     files: ['**/*.{test,spec}.ts'],
-    rules: { 'no-magic-numbers': 'off', '@typescript-eslint/no-non-null-assertion': 'off' },
+    rules: {
+      'no-magic-numbers': 'off',
+      '@typescript-eslint/no-non-null-assertion': 'off',
+    },
   },
 );
