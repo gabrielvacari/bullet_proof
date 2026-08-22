@@ -20,13 +20,23 @@
     "noUnusedParameters": true,
     "exactOptionalPropertyTypes": true,
 
-    "baseUrl": ".",
-    "paths": {
-      "@shared/*": ["shared/*"],
-      "@server/*": ["server/*"],
-      "@client/*": ["client/*"]
-    }
+    /*
+     * Module resolution goes through package.json "imports" (#shared/*, #client/*,
+     * #server/*), NOT tsconfig "paths". See specs/000-m0-walking-box/research.md R2:
+     * "paths" is a type-check-only convenience -- tsc does not rewrite specifiers and
+     * this project runs --noEmit, so an aliased import resolves for the Vite-bundled
+     * client and throws in the plain Node server. Subpath imports resolve natively in
+     * both. Specifiers therefore carry an explicit .ts extension, which Node's type
+     * stripping requires.
+     */
+    "allowImportingTsExtensions": true
   },
-  "include": ["shared/**/*.ts", "server/**/*.ts", "client/**/*.ts", "*.config.ts"],
+  "include": [
+    "shared/**/*.ts",
+    "server/**/*.ts",
+    "client/**/*.ts",
+    "*.config.ts",
+    "vite.config.ts"
+  ],
   "exclude": ["node_modules", "dist", "coverage"]
 }
