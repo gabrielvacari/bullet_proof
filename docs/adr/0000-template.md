@@ -12,9 +12,11 @@ without naming the solution.
 ## Options considered
 
 ### Option A — name
+
 What it is. What it costs. What it buys.
 
 ### Option B — name
+
 Same.
 
 ## Decision

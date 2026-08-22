@@ -45,14 +45,14 @@ docs/network-protocol
 Each roadmap milestone ([08-roadmap.md](requirements/08-roadmap.md)) is an annotated tag on
 `main` once its demo criterion is genuinely met:
 
-| Milestone | Tag |
-|-----------|-----|
-| M0 Walking box | `v0.1.0` |
-| M1 Two players moving | `v0.2.0` |
-| M2 Shooting | `v0.3.0` |
-| M3 An actual match | `v0.4.0` |
+| Milestone               | Tag      |
+| ----------------------- | -------- |
+| M0 Walking box          | `v0.1.0` |
+| M1 Two players moving   | `v0.2.0` |
+| M2 Shooting             | `v0.3.0` |
+| M3 An actual match      | `v0.4.0` |
 | M4 It looks like a game | `v0.5.0` |
-| M5 Finish | `v1.0.0` |
+| M5 Finish               | `v1.0.0` |
 
 ---
 
@@ -72,18 +72,18 @@ locally, before it ever reaches a branch.
 
 ### Types
 
-| Type | Use for |
-|------|---------|
-| `feat` | A new capability a player can observe |
-| `fix` | A bug fix |
-| `perf` | A change made for speed or frame time |
-| `refactor` | Restructuring with no behaviour change |
-| `test` | Adding or fixing tests only |
-| `docs` | Documentation, including `requirements/` and ADRs |
-| `build` | Bundler, `package.json`, dependencies |
-| `ci` | GitHub Actions, hooks, lint config |
-| `chore` | Everything else — assets, gitignore, housekeeping |
-| `revert` | Reverting a previous commit |
+| Type       | Use for                                           |
+| ---------- | ------------------------------------------------- |
+| `feat`     | A new capability a player can observe             |
+| `fix`      | A bug fix                                         |
+| `perf`     | A change made for speed or frame time             |
+| `refactor` | Restructuring with no behaviour change            |
+| `test`     | Adding or fixing tests only                       |
+| `docs`     | Documentation, including `requirements/` and ADRs |
+| `build`    | Bundler, `package.json`, dependencies             |
+| `ci`       | GitHub Actions, hooks, lint config                |
+| `chore`    | Everything else — assets, gitignore, housekeeping |
+| `revert`   | Reverting a previous commit                       |
 
 ### Scopes
 
@@ -149,18 +149,18 @@ Coverage targets are **per directory**, not a single repository number. A unifor
 force mock-heavy tests around Three.js that verify their own mocks, while letting the
 simulation — the part that actually has to be correct — hide behind the average.
 
-| Path | Lines | Why |
-|------|-------|-----|
-| `shared/sim/**` | **100%** | Pure and deterministic by `NFR-004`. There is no excuse. |
-| `shared/protocol/**` | **100%** | Validators are the security boundary — `NFR-011` |
-| `shared/map/**` | **100%** | Pure |
-| `server/**` | **90%** | Testable with a fake socket |
-| `client/net/**` | **90%** | Prediction and reconciliation — where the hard bugs live |
-| `client/hud/**`, `client/storage/**` | 50% | DOM, low risk |
-| `client/render/**` | *excluded* | Needs real WebGL; unit tests here find nothing |
+| Path                                 | Lines      | Why                                                      |
+| ------------------------------------ | ---------- | -------------------------------------------------------- |
+| `shared/sim/**`                      | **100%**   | Pure and deterministic by `NFR-004`. There is no excuse. |
+| `shared/protocol/**`                 | **100%**   | Validators are the security boundary — `NFR-011`         |
+| `shared/map/**`                      | **100%**   | Pure                                                     |
+| `server/**`                          | **90%**    | Testable with a fake socket                              |
+| `client/net/**`                      | **90%**    | Prediction and reconciliation — where the hard bugs live |
+| `client/hud/**`, `client/storage/**` | 50%        | DOM, low risk                                            |
+| `client/render/**`                   | _excluded_ | Needs real WebGL; unit tests here find nothing           |
 
 Enforced in [`vitest.config.ts`](vitest.config.ts) and gated in CI. Excluded is excluded
-from the *denominator* — it does not silently drag the average up either.
+from the _denominator_ — it does not silently drag the average up either.
 
 ### The test that matters most
 
@@ -212,14 +212,14 @@ written — `Q-003` (crosshair ray alignment) especially, and before M2, not aft
 
 ## Enforcement
 
-| Rule | Enforced by | When |
-|------|-------------|------|
-| Commit message format | commitlint + husky `commit-msg` | Local, on commit |
-| Lint + format on changed files | lint-staged + husky `pre-commit` | Local, on commit |
-| Type checking | `tsc --noEmit` | CI |
-| Lint | ESLint | CI |
-| Tests + coverage thresholds | Vitest | CI |
-| `main` stays green | Branch protection: require CI + require PR | GitHub |
+| Rule                           | Enforced by                                | When             |
+| ------------------------------ | ------------------------------------------ | ---------------- |
+| Commit message format          | commitlint + husky `commit-msg`            | Local, on commit |
+| Lint + format on changed files | lint-staged + husky `pre-commit`           | Local, on commit |
+| Type checking                  | `tsc --noEmit`                             | CI               |
+| Lint                           | ESLint                                     | CI               |
+| Tests + coverage thresholds    | Vitest                                     | CI               |
+| `main` stays green             | Branch protection: require CI + require PR | GitHub           |
 
 If a hook is slowing you down, fix the hook. Do not use `--no-verify`.
 

@@ -8,19 +8,19 @@ acceptance criterion, and an explicit status.
 
 ## Read in this order
 
-| # | Document | What it answers |
-|---|----------|-----------------|
-| 01 | [Vision & Scope](01-vision.md) | Why this exists, what "done" means, what it is not |
-| 02 | [Gameplay](02-gameplay.md) | `FR-GP-*` — modes, movement, combat, death, match flow |
-| 03 | [UI & UX](03-ui-ux.md) | `FR-UI-*` — screens, HUD, scoreboard, audio, persistence |
-| 04 | [Map](04-map.md) | `FR-MAP-*` — arena format, geometry, spawns |
-| 05 | [Architecture](05-architecture.md) | `NFR-*` — stack, processes, module boundaries |
-| 06 | [Network Protocol](06-network-protocol.md) | `NET-*` — tick model, every message, prediction model |
-| 07 | [Tuning Constants](07-constants.md) | Every number in one place |
-| 08 | [Roadmap](08-roadmap.md) | Phase ordering, `M0`–`M5` |
-| 09 | [Out of Scope](09-out-of-scope.md) | What must NOT be built in v1 |
-| 10 | [Decision Log](10-decision-log.md) | Decisions made, and what they override |
-| 11 | [Open Questions](11-open-questions.md) | Unresolved — must be answered before the phase that needs them |
+| #   | Document                                   | What it answers                                                |
+| --- | ------------------------------------------ | -------------------------------------------------------------- |
+| 01  | [Vision & Scope](01-vision.md)             | Why this exists, what "done" means, what it is not             |
+| 02  | [Gameplay](02-gameplay.md)                 | `FR-GP-*` — modes, movement, combat, death, match flow         |
+| 03  | [UI & UX](03-ui-ux.md)                     | `FR-UI-*` — screens, HUD, scoreboard, audio, persistence       |
+| 04  | [Map](04-map.md)                           | `FR-MAP-*` — arena format, geometry, spawns                    |
+| 05  | [Architecture](05-architecture.md)         | `NFR-*` — stack, processes, module boundaries                  |
+| 06  | [Network Protocol](06-network-protocol.md) | `NET-*` — tick model, every message, prediction model          |
+| 07  | [Tuning Constants](07-constants.md)        | Every number in one place                                      |
+| 08  | [Roadmap](08-roadmap.md)                   | Phase ordering, `M0`–`M5`                                      |
+| 09  | [Out of Scope](09-out-of-scope.md)         | What must NOT be built in v1                                   |
+| 10  | [Decision Log](10-decision-log.md)         | Decisions made, and what they override                         |
+| 11  | [Open Questions](11-open-questions.md)     | Unresolved — must be answered before the phase that needs them |
 
 ## Conventions
 
@@ -52,17 +52,17 @@ config module.
 
 ## Project snapshot
 
-| Aspect | Decision |
-|--------|----------|
-| Goal | Portfolio piece — must look good and be playable by a stranger in under 10 seconds |
-| Genre | Third-person arena shooter, 3D |
-| Modes | Free-for-all, Team Deathmatch (blue vs red) |
-| Players | Up to {MAX_PLAYERS_PER_ROOM} per room |
-| Renderer | Three.js, real 3D, over-the-shoulder camera |
-| Characters | Free rigged models with animations (Mixamo / Kenney / Sketchfab CC0) |
-| Authority | Server-authoritative simulation and hit detection |
-| Transport | WebSocket, binary-agnostic JSON in v1 |
-| Persistence | `localStorage` only — no database, no accounts |
-| Deploy | Local development only in v1; architecture must stay deployable to a long-lived Node process |
-| Language | Documents, UI, code, and identifiers all in English |
-| Timeline | Open-ended, incremental — see [08-roadmap.md](08-roadmap.md) |
+| Aspect      | Decision                                                                                     |
+| ----------- | -------------------------------------------------------------------------------------------- |
+| Goal        | Portfolio piece — must look good and be playable by a stranger in under 10 seconds           |
+| Genre       | Third-person arena shooter, 3D                                                               |
+| Modes       | Free-for-all, Team Deathmatch (blue vs red)                                                  |
+| Players     | Up to {MAX_PLAYERS_PER_ROOM} per room                                                        |
+| Renderer    | Three.js, real 3D, over-the-shoulder camera                                                  |
+| Characters  | Free rigged models with animations (Mixamo / Kenney / Sketchfab CC0)                         |
+| Authority   | Server-authoritative simulation and hit detection                                            |
+| Transport   | WebSocket, binary-agnostic JSON in v1                                                        |
+| Persistence | `localStorage` only — no database, no accounts                                               |
+| Deploy      | Local development only in v1; architecture must stay deployable to a long-lived Node process |
+| Language    | Documents, UI, code, and identifiers all in English                                          |
+| Timeline    | Open-ended, incremental — see [08-roadmap.md](08-roadmap.md)                                 |

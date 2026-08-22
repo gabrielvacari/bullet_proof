@@ -29,6 +29,6 @@ decided before firing code is written in M2, not after.
 
 ## Index
 
-| ADR | Title | Status |
-|-----|-------|--------|
+| ADR                                       | Title                     | Status   |
+| ----------------------------------------- | ------------------------- | -------- |
 | [0001](0001-github-flow-over-git-flow.md) | GitHub Flow over Git Flow | Accepted |

@@ -10,6 +10,7 @@ current one's criterion is genuinely met.
 ---
 
 ## M0 — Walking box
+
 **Demo:** One player, one browser, walks around the arena in third person.
 
 - Project scaffold, `/shared` `/client` `/server` split (`NFR-003`)
@@ -25,6 +26,7 @@ current one's criterion is genuinely met.
 > mistake available in this project.
 
 ## M1 — Two players moving
+
 **Demo:** Two browsers see each other move smoothly.
 
 - WebSocket server, one hardcoded room (`NFR-002`, `NFR-015`)
@@ -39,6 +41,7 @@ current one's criterion is genuinely met.
 > and do not move on while remote players still jitter.
 
 ## M2 — Shooting
+
 **Demo:** Two players can kill each other and respawn.
 
 - Server-side hitscan raycast against level geometry and static hit volumes
@@ -50,6 +53,7 @@ current one's criterion is genuinely met.
 - Minimum HUD: health, ammo, crosshair (`FR-UI-005`–`FR-UI-007`)
 
 ## M3 — An actual match
+
 **Demo:** A full match runs start to finish and restarts on its own.
 
 - FFA and TDM modes, team assignment, no friendly fire (`FR-GP-001`–`FR-GP-006`)
@@ -60,6 +64,7 @@ current one's criterion is genuinely met.
 - Results screen (`FR-UI-004`)
 
 ## M4 — It looks like a game
+
 **Demo:** A stranger watching a 30-second clip thinks it is a real game.
 
 - Rigged character models with idle/walk/run/shoot/reload/death (`NFR-016`, `NFR-017`)
@@ -71,6 +76,7 @@ current one's criterion is genuinely met.
   (`FR-MAP-004`, `FR-MAP-005`)
 
 ## M5 — Finish
+
 **Demo:** Handed to someone with only a link, they play without asking a question.
 
 - `localStorage`: nickname, last room code, local stats (`FR-UI-020`–`FR-UI-024`)
