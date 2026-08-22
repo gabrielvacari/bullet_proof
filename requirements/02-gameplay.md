@@ -139,8 +139,10 @@ rotates to face its movement direction.
 
 **Status:** REQUIRED
 **Statement:** Holding `Shift` while moving forward increases speed to {SPRINT_SPEED}.
-**Acceptance:** Sprint applies only to forward-dominant movement, not to strafing or
-backpedalling. Sprint has no stamina cost in v1.
+**Acceptance:** Sprint applies only when the movement input vector lies within
+{SPRINT_FORWARD_MIN_DOT} of forward (a dot product, equivalent to 45°) — `W`, `W`+`A` and `W`+`D` sprint; strafing and
+backpedalling do not. A crouched player never sprints; {CROUCH_SPEED} applies regardless of
+the sprint key. Sprint has no stamina cost in v1. See `D-017`.
 
 ### FR-GP-017 — Jumping
 

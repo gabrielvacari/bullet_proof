@@ -130,3 +130,38 @@ artefact is in English.
 **Decision:** Nickname, last room code, and local career stats (`FR-UI-020`–`FR-UI-022`).
 **Consequence:** No database, no accounts, no leaderboard. Local stats are per-browser and
 trivially editable, so the UI must present them as personal, never competitive.
+
+### D-016 — Crouching and jumping stay mutually exclusive
+
+**Resolves:** `Q-005`. **Blocked:** M0.
+**Alternatives:** Crouch-jump, a genre convention that gives extra apex height and is used to
+reach ledges.
+**Decision:** `FR-GP-018` stands unchanged — a crouched player cannot jump.
+**Consequence:** The movement state machine has one fewer transition and no mid-air capsule
+resize, which keeps `shared/sim` smaller and its 100% coverage target honest. Nothing is lost
+in level design, because `FR-MAP-010` already limits verticality to blocks reachable with a
+normal jump; the arena must therefore never require crouch-jump height to traverse.
+
+### D-017 — Sprint is forward-dominant within 45°, and never while crouched
+
+**Resolves:** `Q-007`. **Blocked:** M0.
+**Alternatives:** A strict sign check (`W` alone, strafe axis zero) — restrictive, and makes
+`W`+`A` feel like the player is stuck; any positive forward component — permissive, and
+degenerates into sideways sprinting.
+**Decision:** {SPRINT_SPEED} applies when the movement input vector's dot product with
+forward is at least {SPRINT_FORWARD_MIN_DOT} (`cos 45°`), which covers `W`, `W`+`A` and `W`+`D`.
+Expressed as a cosine rather than an angle so the check needs no trigonometry — see ADR-0001. A crouched player
+never sprints — {CROUCH_SPEED} wins regardless of the sprint key.
+**Consequence:** "Forward-dominant" in `FR-GP-016` now has a single testable threshold living in
+[07-constants.md](07-constants.md), so tuning it is a constants edit (`SC-4`). Diagonal forward
+movement keeps its momentum, and sprint cannot be used to strafe or backpedal quickly.
+
+### D-018 — `passWithNoTests` removed with the first real test
+
+**Resolves:** `Q-008`. **Blocked:** M0.
+**Decision:** `vitest.config.ts` no longer sets `passWithNoTests`. The flag was removed in the
+same change that landed the first `shared/constants` test, as `Q-008` required.
+**Consequence:** A suite that loses all of its tests — a bad glob, a renamed directory, a
+misconfigured `include` — now fails CI instead of passing silently. The cost is that any future
+state in which the repository legitimately has no tests will fail the gate; there is no such
+state after M0, which is why the flag could go.

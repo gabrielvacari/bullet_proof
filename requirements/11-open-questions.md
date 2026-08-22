@@ -55,14 +55,6 @@ A visitor who arrives when nobody is online currently gets an empty arena. Simpl
 would fix the worst failure mode of a multiplayer portfolio demo. Currently `DEFERRED`
 ([09-out-of-scope.md](09-out-of-scope.md)). Worth revisiting after M5, alongside Q-001.
 
-### Q-005 — Does crouch-jump exist?
-
-**Blocks:** M0. **Severity:** low, but it must be decided before movement is written.
-
-`FR-GP-018` says crouching and jumping are mutually exclusive. Confirm this is intended —
-crouch-jumping to reach higher ledges is a genre convention, and `FR-MAP-010` allows blocks
-you can jump onto. If crouch-jump is desired, `FR-GP-018` must be amended before M0.
-
 ### Q-006 — What happens to a player idle in pointer-lock-released state?
 
 **Blocks:** M3. **Severity:** low.
@@ -70,26 +62,6 @@ you can jump onto. If crouch-jump is desired, `FR-GP-018` must be amended before
 `FR-GP-021` keeps a player in the match and killable after they press `Esc`. Over a long
 match this leaves a stationary free kill in the arena. Options: leave as-is; kick after N
 seconds of no input; or hide them from scoring. Not urgent, but it will look bad in a demo.
-
-### Q-007 — Sprint while crouched, and sprint direction
-
-**Blocks:** M0. **Severity:** low.
-
-`FR-GP-016` restricts sprint to "forward-dominant" movement without defining the threshold
-(an angle from forward? a sign check on the forward input?). And sprint while crouched is
-unspecified — presumably it should simply not apply. Pin both down in the shared movement
-module and record the rule.
-
-### Q-008 — `passWithNoTests` must be removed at M0
-
-**Blocks:** M0. **Severity:** low, but it silently weakens the CI gate until resolved.
-
-`vitest.config.ts` sets `passWithNoTests: true` so that CI is green on a repository that
-has no source code yet. That is honest today, but if it is left on permanently, a suite
-that loses all of its tests — a bad glob, a renamed directory — passes CI without a word.
-
-Remove the flag in the same PR that lands the first real test, which per
-[08-roadmap.md](08-roadmap.md) is the shared movement simulation in M0.
 
 ### Q-009 — Repository settings do not enforce the branching model
 
