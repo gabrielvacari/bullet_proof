@@ -1,8 +1,9 @@
-# ADR-0000 — Title
+# ADR-NNNN — Title
 
 **Status:** Proposed | Accepted | Superseded by ADR-NNNN
 **Date:** YYYY-MM-DD
-**Relates to:** FR-GP-000, NFR-000, Q-000
+**Relates to:** requirement IDs or open questions this bears on, if any (e.g. FR-UI-007,
+Q-003). Write "none" for a pure project-mechanics decision.
 
 ## Context
 

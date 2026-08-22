@@ -90,3 +90,29 @@ that loses all of its tests — a bad glob, a renamed directory — passes CI wi
 
 Remove the flag in the same PR that lands the first real test, which per
 [08-roadmap.md](08-roadmap.md) is the shared movement simulation in M0.
+
+### Q-009 — Repository settings do not enforce the branching model
+
+**Blocks:** nothing technically. **Severity:** medium — the stated process is currently
+unenforced.
+
+[CONTRIBUTING.md](../CONTRIBUTING.md) states that `main` is protected and that PRs are
+**squash merged**. Neither is true of the repository as configured:
+
+- **Branch protection is not enabled.** Anything can be pushed straight to `main`, and the
+  `verify` job is not a required status check. GitHub Flow's only safety net is the CI
+  gate, so without this the model is a convention rather than a rule.
+- **Squash merge is not enforced.** PR #1 landed as a merge commit
+  (`5ee7eda Merge pull request #1`), not a squash. This matters beyond tidiness: squash
+  merging is what makes the commit body the permanent record of which requirement IDs a
+  change implements, which is the whole traceability mechanism described in
+  [CONTRIBUTING.md](../CONTRIBUTING.md#reference-requirement-ids).
+
+Two things to decide:
+
+1. Enable branch protection on `main` requiring a PR and the `verify` check. Note this also
+   blocks the repository owner from pushing directly unless an administrator exception is
+   configured.
+2. Either configure the repository to allow squash merging only, or amend
+   [CONTRIBUTING.md](../CONTRIBUTING.md) to accept merge commits. **The documentation and
+   the repository settings must agree** — right now they do not.

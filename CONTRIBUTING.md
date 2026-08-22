@@ -25,9 +25,8 @@ main    ──●───●───●───●──▶
 4. **Squash merge.** One feature, one commit on `main`.
 5. Delete the branch.
 
-There is no `develop`, no `release/*`, and no `hotfix/*`. This project has one environment
-and one version in flight; long-lived parallel branches would add ceremony without adding
-safety. Recorded in [ADR-0001](docs/adr/0001-github-flow-over-git-flow.md).
+There is no `develop`, no `release/*`, and no `hotfix/*`. One environment, one version in
+flight, no long-lived parallel branches. This is not up for discussion — follow it.
 
 ### Branch naming
 
@@ -202,7 +201,9 @@ Write it as soon as `shared/sim` exists. It is worth more than the rest of the s
 
 Product decisions go in
 [requirements/10-decision-log.md](requirements/10-decision-log.md).
-**Technical** decisions go in [`docs/adr/`](docs/adr/README.md) as numbered ADRs.
+Decisions with **no requirement ID** — project mechanics, and implementation choices a
+requirement deliberately leaves open — go in [`docs/adr/`](docs/adr/README.md) as numbered
+ADRs. The full boundary is in [docs/adr/README.md](docs/adr/README.md#where-a-decision-belongs).
 
 Write an ADR when the decision is expensive to reverse. The open questions in
 [11-open-questions.md](requirements/11-open-questions.md) are all ADRs waiting to be
