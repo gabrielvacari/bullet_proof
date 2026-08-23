@@ -27,6 +27,12 @@ export default defineConfig({
         // Testing them would amount to testing the browser's event dispatch.
         'client/input/pointer-lock.ts',
         'client/boot/main.ts',
+        // The WebSocket shell, on the same bargain and only while it keeps it: every
+        // rule it might have held is already elsewhere and tested -- the snapshot buffer
+        // in client/net/interpolation.ts, the replay in client/net/prediction.ts, the
+        // parsing in shared/protocol. What is left is addEventListener and a switch.
+        // If a decision reappears here, it moves out rather than this line staying.
+        'client/net/socket.ts',
         '**/*.d.ts',
         '**/*.{test,spec}.ts',
         '**/__fixtures__/**',
