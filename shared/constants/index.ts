@@ -110,8 +110,13 @@ export const MAX_QUEUED_INPUTS = 10;
 export const MAX_MESSAGE_BYTES = 1_024;
 /** Tolerance when validating that input.dir is unit length -- NET-004c. */
 export const AIM_EPSILON = 0.001;
-/** Port the authoritative Node process listens on -- NFR-002. */
-export const SERVER_PORT = 8_080;
+/**
+ * Port the authoritative Node process listens on -- NFR-002.
+ *
+ * Not 8080: that is the most contended port on a developer's machine, and a collision
+ * shows up as a server that will not start rather than as anything legible.
+ */
+export const SERVER_PORT = 8_787;
 /** Path the WebSocket upgrade is accepted on. Every other path is refused. */
 export const WS_PATH = '/ws';
 /**
