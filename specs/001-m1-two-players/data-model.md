@@ -279,7 +279,7 @@ this table is the list a human syncs into it.
 
 | Constant                         | Value          | Why it is needed                                                                                                              |
 | -------------------------------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `SERVER_PORT`                    | `8080`         | The port the Node process listens on, imported by `server/index.ts` **and** `vite.config.ts` so the proxy cannot drift (R10)  |
+| `SERVER_PORT`                    | `8787`         | The port the Node process listens on, imported by `server/index.ts` **and** `vite.config.ts` so the proxy cannot drift (R10)  |
 | `WS_PATH`                        | `'/ws'`        | The WebSocket path, shared by the same two files                                                                              |
 | `MAX_MALFORMED_MESSAGES`         | `10`           | Malformed messages tolerated on one connection before it is closed — `NFR-011`'s "on repetition"                              |
 | `MAX_PENDING_INPUTS`             | derived        | `MAX_INPUTS_PER_SECOND` — one second of unacknowledged input. Computed, not written down                                      |

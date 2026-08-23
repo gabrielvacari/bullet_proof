@@ -12,7 +12,7 @@ import type { ClientMessage, ServerMessage } from '#shared/protocol/types.ts';
 
 import { createSession } from './net/connection.ts';
 import type { Transport } from './net/transport.ts';
-import { listen } from './net/ws/server.ts';
+import { listen } from './net/ws-transport.ts';
 import { createLoop } from './room/loop.ts';
 import { type Room, createRoom } from './room/room.ts';
 
@@ -255,6 +255,23 @@ describe('two players, one server', () => {
   });
 
   /** NFR-011 and NFR-010, against a client that is actually hostile rather than mocked. */
+  it('drops a binary frame instead of coercing it into a message', async () => {
+    // NET-001: every message is JSON text with a `t` field. A binary frame is not one, so
+    // there is no handler it could reach. Dropping it at the transport keeps the session
+    // from ever seeing a shape the protocol does not describe -- and, unlike garbage text,
+    // a binary frame is not a malformed message either, so it must not spend the strike
+    // budget that would eventually close an honest client's socket.
+    const harness = await startServer();
+    const client = await joinedClient(harness.url, 'ana');
+
+    client.socket.send(new Uint8Array([0x00, 0xff, 0x10]).buffer);
+
+    // Still alive and still served afterwards: the frame went nowhere.
+    const snapshot = await client.waitFor('snapshot');
+    expect(snapshot.players).toHaveLength(1);
+    expect(client.socket.readyState).toBe(client.socket.OPEN);
+  });
+
   it('keeps one player moving while another floods and sends garbage', async () => {
     harness = await startServer();
 

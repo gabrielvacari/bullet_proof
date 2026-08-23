@@ -4,7 +4,7 @@ import { SERVER_PORT, SERVER_TICK_HZ, WS_PATH } from '#shared/constants/index.ts
 import { loadMap } from '#shared/map/load.ts';
 
 import { createSession } from './net/connection.ts';
-import { listen } from './net/ws/server.ts';
+import { listen } from './net/ws-transport.ts';
 import { createLoop } from './room/loop.ts';
 import { createRoom } from './room/room.ts';
 

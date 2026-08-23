@@ -4,7 +4,7 @@
 
 **Created**: 2026-08-22
 
-**Status**: Implemented — automated criteria green; manual criteria and `OQ-A`/`OQ-B` await the project owner
+**Status**: Implemented — automated criteria green; `OQ-B` closed by the owner; manual criteria and `OQ-A` still await them
 
 **Demo criterion**: Two browsers see each other move smoothly.
 
@@ -411,7 +411,7 @@ absorbs bursts instead of overflowing on every frame. No numbered requirement ch
 un-numbered Model bullet reads differently, and the project owner should amend that prose to say
 "per simulation tick".
 
-### OQ-B — The WebSocket transport, and the dependency it would need
+### ~~OQ-B~~ — The WebSocket transport, and the dependency it would need · **CLOSED**
 
 `05-architecture.md` fixes WebSocket as the transport but names no library, and the Constitution
 requires the project owner's approval for **any** new dependency. The obvious choice, `ws`, is
@@ -424,6 +424,18 @@ speaks it, not us — and its parts are pure functions, which suits the 90% thre
 `server/**` better than a wrapper around a third-party socket would. Reasoning and the rejected
 alternatives are in [research.md](research.md) R2; the plan carries it as a gate the owner can
 overturn cheaply.
+
+**Closed 2026-08-23: the project owner approved `ws`.** The hand-rolled codec was replaced by a
+`ws`-backed `Transport` in `server/net/ws-transport.ts`, and `server/net/ws/` was deleted — 482
+lines of RFC 6455 frame parsing, masking and fragment reassembly, which is security surface this
+project has no reason to own. Nothing above the `Transport` seam changed: not the room, not the
+session, not one of their tests. That the swap cost one directory is the evidence the seam was
+worth putting there.
+
+The transport's coverage went **up**, from 97.24% statements / 86.11% branches to 100% / 100%,
+because `ws` absorbed the fragment reassembly, ping/pong and payload-cap paths that the
+hand-rolled version had to carry and test itself. `maxPayload` now enforces {MAX_MESSAGE_BYTES}
+at the frame level, so an oversized message never reaches a buffer we own (`NFR-010`).
 
 ---
 

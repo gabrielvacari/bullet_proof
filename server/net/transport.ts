@@ -4,10 +4,10 @@
  * Everything above this line -- the room, the connection state, the tick -- speaks only
  * these two interfaces and has never heard of a frame, a mask or a handshake.
  *
- * That is deliberate, and it is what makes gate `OQ-B` cheap to reverse. M1 could not add
- * `ws` without the project owner's approval, so it ships a hand-rolled RFC 6455 codec in
- * server/net/ws/. If the owner approves the dependency, a second implementation of
- * `Transport` replaces the first and nothing else in the codebase changes.
+ * That is deliberate, and gate `OQ-B` proved it. M1 could not add `ws` without the project
+ * owner's approval, so it first shipped a hand-rolled RFC 6455 codec. When the dependency
+ * was approved, swapping it for `ws` replaced one directory below this seam and changed
+ * nothing above it -- not the room, not the session, not a single test of either.
  */
 
 export interface Transport {
