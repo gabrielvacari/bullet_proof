@@ -4,7 +4,7 @@
 
 **Created**: 2026-08-22
 
-**Status**: Draft — awaiting the project owner's review
+**Status**: Implemented — automated criteria green; manual criteria and `OQ-A`/`OQ-B` await the project owner
 
 **Demo criterion**: Two browsers see each other move smoothly.
 
