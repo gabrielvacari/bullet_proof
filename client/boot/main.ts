@@ -1,10 +1,11 @@
 import { PLAYER_HEIGHT, TICK_DURATION_S } from '#shared/constants/index.ts';
 import { loadMap } from '#shared/map/load.ts';
+import { inputFromKeys } from '#shared/protocol/keys.ts';
 import { step } from '#shared/sim/step.ts';
 import type { PlayerState } from '#shared/sim/types.ts';
 
 import { aimDirection } from '#client/input/aim.ts';
-import { inputFrom } from '#client/input/keys.ts';
+import { keysFromHeld } from '#client/input/keys.ts';
 import { startInputSession } from '#client/input/pointer-lock.ts';
 import { updateCamera } from '#client/render/camera.ts';
 import { createPlayerView } from '#client/render/player.ts';
@@ -65,7 +66,7 @@ function frame(now: number): void {
     // While unlocked the player stands still but the world keeps running -- FR-GP-021
     // says the match continues and the player stays in it.
     const held = session.locked() ? session.held() : new Set<string>();
-    current = step(current, inputFrom(held, dir), map);
+    current = step(current, inputFromKeys(keysFromHeld(held), dir), map);
   }
 
   const drawn = view.draw(previous, current, tick.alpha);
