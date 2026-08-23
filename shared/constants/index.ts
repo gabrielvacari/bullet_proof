@@ -110,6 +110,27 @@ export const MAX_QUEUED_INPUTS = 10;
 export const MAX_MESSAGE_BYTES = 1_024;
 /** Tolerance when validating that input.dir is unit length -- NET-004c. */
 export const AIM_EPSILON = 0.001;
+/** Port the authoritative Node process listens on -- NFR-002. */
+export const SERVER_PORT = 8_080;
+/** Path the WebSocket upgrade is accepted on. Every other path is refused. */
+export const WS_PATH = '/ws';
+/**
+ * Malformed messages tolerated on one connection before it is closed -- NFR-011's
+ * "on repetition, the connection is closed". Not reset by an intervening valid message:
+ * a client dripping garbage slowly is still a client sending garbage.
+ */
+export const MAX_MALFORMED_MESSAGES = 10;
+/**
+ * Fraction of the render-side reconciliation error carried into the next tick -- NFR-007.
+ *
+ * Applied per simulation tick rather than per rendered frame, so convergence is
+ * frame-rate independent without Math.pow, which ADR-0001 bars from shared/. At
+ * SERVER_TICK_HZ this brings a correction below 5% of its original size in about 200 ms:
+ * fast enough not to feel like drifting, slow enough not to read as a jump.
+ */
+export const RECONCILE_ERROR_DECAY_PER_TICK = 0.85;
+/** Below this the reconciliation error is zeroed rather than decaying forever. */
+export const RECONCILE_ERROR_EPSILON = 0.001;
 
 /* ---------------------------------------------------- Identity and input ---- */
 
@@ -154,14 +175,28 @@ export const MAX_SUBSTEPS_PER_FRAME = 5;
 
 /* ------------------------------------------- Derived -- never hardcode these ---- */
 
+/** Milliseconds in a second. A unit conversion, not a tuning value. */
+export const MS_PER_SECOND = 1_000;
 /** Tick duration in seconds. The simulation integrates m/s, so it needs seconds. */
 export const TICK_DURATION_S = 1 / SERVER_TICK_HZ;
 /** Tick duration in milliseconds -- 33.33 ms at 30 Hz. */
-export const TICK_DURATION_MS = 1_000 / SERVER_TICK_HZ;
+export const TICK_DURATION_MS = MS_PER_SECOND / SERVER_TICK_HZ;
 /** Snapshot interval in milliseconds -- 50 ms at 20 Hz. */
-export const SNAPSHOT_INTERVAL_MS = 1_000 / SNAPSHOT_HZ;
+export const SNAPSHOT_INTERVAL_MS = MS_PER_SECOND / SNAPSHOT_HZ;
 /** Seconds to empty a magazine -- 3.75 s. */
 export const MAGAZINE_DURATION_S = MAGAZINE_SIZE / FIRE_RATE_RPS;
+/**
+ * Unacknowledged inputs the client keeps for replay -- one second of them. Derived so
+ * that raising MAX_INPUTS_PER_SECOND cannot leave the replay buffer shorter than the
+ * inputs it has to hold (NFR-007).
+ */
+export const MAX_PENDING_INPUTS = MAX_INPUTS_PER_SECOND;
+/**
+ * Snapshots the interpolation buffer keeps: enough to bracket a sample taken
+ * INTERPOLATION_DELAY in the past, plus two for jitter (NFR-008).
+ */
+export const SNAPSHOT_BUFFER_SIZE =
+  Math.ceil(INTERPOLATION_DELAY / SNAPSHOT_INTERVAL_MS) + 2;
 /** Shots to kill, by region. */
 export const SHOTS_TO_KILL_HEAD = Math.ceil(PLAYER_MAX_HEALTH / DAMAGE_HEAD);
 export const SHOTS_TO_KILL_TORSO = Math.ceil(PLAYER_MAX_HEALTH / DAMAGE_TORSO);

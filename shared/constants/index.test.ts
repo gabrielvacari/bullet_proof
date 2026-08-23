@@ -7,14 +7,19 @@ import {
   DAMAGE_LEGS,
   DAMAGE_TORSO,
   FIRE_RATE_RPS,
+  INTERPOLATION_DELAY,
   MAGAZINE_DURATION_S,
   MAGAZINE_SIZE,
+  MAX_INPUTS_PER_SECOND,
+  MAX_PENDING_INPUTS,
+  MS_PER_SECOND,
   PLAYER_HEIGHT,
   PLAYER_MAX_HEALTH,
   SERVER_TICK_HZ,
   SHOTS_TO_KILL_HEAD,
   SHOTS_TO_KILL_LEGS,
   SHOTS_TO_KILL_TORSO,
+  SNAPSHOT_BUFFER_SIZE,
   SNAPSHOT_HZ,
   SNAPSHOT_INTERVAL_MS,
   SPRINT_FORWARD_MIN_DOT,
@@ -32,17 +37,29 @@ import {
 describe('derived constants', () => {
   it('derives tick duration from the tick rate rather than restating it', () => {
     expect(TICK_DURATION_S).toBe(1 / SERVER_TICK_HZ);
-    expect(TICK_DURATION_MS).toBe(1000 / SERVER_TICK_HZ);
+    expect(TICK_DURATION_MS).toBe(MS_PER_SECOND / SERVER_TICK_HZ);
     expect(TICK_DURATION_MS).toBeCloseTo(33.33, 2);
   });
 
   it('derives the snapshot interval from the snapshot rate', () => {
-    expect(SNAPSHOT_INTERVAL_MS).toBe(1000 / SNAPSHOT_HZ);
+    expect(SNAPSHOT_INTERVAL_MS).toBe(MS_PER_SECOND / SNAPSHOT_HZ);
   });
 
   it('derives magazine duration from size and fire rate', () => {
     expect(MAGAZINE_DURATION_S).toBe(MAGAZINE_SIZE / FIRE_RATE_RPS);
     expect(MAGAZINE_DURATION_S).toBeCloseTo(3.75, 5);
+  });
+
+  it('sizes the replay buffer from the send rate, so it can never be too short', () => {
+    expect(MAX_PENDING_INPUTS).toBe(MAX_INPUTS_PER_SECOND);
+  });
+
+  it('sizes the interpolation buffer to bracket INTERPOLATION_DELAY, plus jitter', () => {
+    expect(SNAPSHOT_BUFFER_SIZE).toBe(
+      Math.ceil(INTERPOLATION_DELAY / SNAPSHOT_INTERVAL_MS) + 2,
+    );
+    // Two snapshots are the minimum that can bracket any sample time at all.
+    expect(SNAPSHOT_BUFFER_SIZE).toBeGreaterThan(2);
   });
 
   it('derives shots to kill, giving the 2 / 5 / 10 of FR-GP-026', () => {
