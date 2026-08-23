@@ -285,10 +285,12 @@ the server. Reloading a full magazine does nothing.
 
 ### FR-GP-032 — Reload is interrupted by death
 
-**Status:** PROPOSED
+**Status:** REQUIRED
 **Statement:** Dying cancels an in-progress reload. Respawning grants a full magazine.
 **Acceptance:** A player who dies mid-reload respawns with {MAGAZINE_SIZE} rounds and no
 pending reload timer.
+**Note:** Confirmed by the project owner on 2026-08-23, before M2 turned it into tested
+behaviour. {MAGAZINE_SIZE} itself remains a tuning value — see `Q-002`.
 
 ### FR-GP-033 — Crosshair accuracy
 
@@ -338,11 +340,14 @@ countdown during the delay.
 
 ### FR-GP-038 — Spawn point selection
 
-**Status:** PROPOSED
+**Status:** REQUIRED
 **Statement:** The server picks the spawn point that maximises distance to the nearest
 living enemy, among spawn points valid for the player's team.
 **Acceptance:** A player never spawns within {MIN_SPAWN_DISTANCE} of a living enemy while
 any valid spawn point satisfies that constraint. If none does, the farthest is used.
+**Note:** Confirmed by the project owner on 2026-08-23. The rule is an argmax with a
+deterministic fallback — there is no random element, so it needs no seed. {MIN_SPAWN_DISTANCE}
+itself remains a tuning value — see `Q-002`.
 
 ### FR-GP-039 — Spawn protection
 
