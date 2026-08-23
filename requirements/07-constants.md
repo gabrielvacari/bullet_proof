@@ -25,15 +25,16 @@ require touching game logic (`SC-4`).
 
 ## Player
 
-| Constant             | Value   | Status   | Notes                                              |
-| -------------------- | ------- | -------- | -------------------------------------------------- |
-| `PLAYER_MAX_HEALTH`  | `100`   | REQUIRED | No armour — `FR-GP-034`                            |
-| `RESPAWN_DELAY`      | `3 s`   | PROPOSED |                                                    |
-| `MIN_SPAWN_DISTANCE` | `15 m`  | PROPOSED | From nearest living enemy                          |
-| `PLAYER_HEIGHT`      | `1.8 m` | PROPOSED | Standing capsule height                            |
-| `CROUCH_HEIGHT`      | `1.1 m` | PROPOSED | Also the height of waist-high cover — `FR-MAP-005` |
-| `PLAYER_RADIUS`      | `0.4 m` | PROPOSED | Collision capsule radius                           |
-| `EYE_HEIGHT`         | `1.6 m` | PROPOSED | Ray origin for firing                              |
+| Constant             | Value               | Status   | Notes                                                                                                                                                                                                  |
+| -------------------- | ------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `PLAYER_MAX_HEALTH`  | `100`               | REQUIRED | No armour — `FR-GP-034`                                                                                                                                                                                |
+| `RESPAWN_DELAY`      | `3 s`               | PROPOSED |                                                                                                                                                                                                        |
+| `MIN_SPAWN_DISTANCE` | `15 m`              | PROPOSED | From nearest living enemy                                                                                                                                                                              |
+| `PLAYER_HEIGHT`      | `1.8 m`             | PROPOSED | Standing capsule height                                                                                                                                                                                |
+| `CROUCH_HEIGHT`      | `1.1 m`             | PROPOSED | Also the height of waist-high cover — `FR-MAP-005`                                                                                                                                                     |
+| `PLAYER_RADIUS`      | `0.4 m`             | PROPOSED | Collision capsule radius                                                                                                                                                                               |
+| `EYE_HEIGHT`         | `1.6 m`             | PROPOSED | Ray origin for firing                                                                                                                                                                                  |
+| `IDLE_TIMEOUT`       | `120 s` (120000 ms) | PROPOSED | No valid input for this long removes the player as a disconnect — `D-019`. Deliberately generous: a short value punishes someone who tabbed away, which is a worse complaint than the problem it fixes |
 
 ## Movement
 
@@ -50,15 +51,23 @@ require touching game logic (`SC-4`).
 
 ## Weapon
 
-| Constant        | Value       | Status   | Notes                                  |
-| --------------- | ----------- | -------- | -------------------------------------- |
-| `MAGAZINE_SIZE` | `30`        | PROPOSED |                                        |
-| `RELOAD_TIME`   | `2.0 s`     | PROPOSED |                                        |
-| `FIRE_RATE_RPS` | `8` shots/s | PROPOSED | ~480 RPM; server-enforced              |
-| `WEAPON_RANGE`  | `100 m`     | PROPOSED | Should comfortably exceed `ARENA_SIZE` |
-| `DAMAGE_HEAD`   | `50`        | REQUIRED | 2 shots to kill                        |
-| `DAMAGE_TORSO`  | `20`        | REQUIRED | 5 shots to kill                        |
-| `DAMAGE_LEGS`   | `10`        | REQUIRED | 10 shots to kill                       |
+| Constant                | Value       | Status   | Notes                                                                         |
+| ----------------------- | ----------- | -------- | ----------------------------------------------------------------------------- |
+| `MAGAZINE_SIZE`         | `30`        | PROPOSED |                                                                               |
+| `RELOAD_TIME`           | `2.0 s`     | PROPOSED |                                                                               |
+| `FIRE_RATE_RPS`         | `8` shots/s | PROPOSED | ~480 RPM; server-enforced                                                     |
+| `WEAPON_RANGE`          | `100 m`     | PROPOSED | Should comfortably exceed `ARENA_SIZE`                                        |
+| `DAMAGE_HEAD`           | `50`        | REQUIRED | 2 shots to kill                                                               |
+| `DAMAGE_TORSO`          | `20`        | REQUIRED | 5 shots to kill                                                               |
+| `DAMAGE_LEGS`           | `10`        | REQUIRED | 10 shots to kill                                                              |
+| `HEAD_CENTRE_FRACTION`  | `0.93`      | PROPOSED | Head sphere centre, as a fraction of the current capsule height — `FR-GP-027` |
+| `HEAD_RADIUS_FRACTION`  | `0.07`      | PROPOSED | Small enough that a head shot is a skill shot                                 |
+| `TORSO_TOP_FRACTION`    | `0.86`      | PROPOSED | Meets the head sphere without a gap                                           |
+| `TORSO_BOTTOM_FRACTION` | `0.50`      | PROPOSED | Hip line; also the leg capsule's top                                          |
+| `TORSO_RADIUS_FRACTION` | `0.14`      | PROPOSED | Must stay below `PLAYER_RADIUS`                                               |
+| `LEG_TOP_FRACTION`      | `0.50`      | PROPOSED | Shares the torso's boundary — no gap, no overlap                              |
+| `LEG_BOTTOM_FRACTION`   | `0.02`      | PROPOSED | Just above the floor, so a grazing ground-level shot still registers          |
+| `LEG_RADIUS_FRACTION`   | `0.10`      | PROPOSED | Must stay below `PLAYER_RADIUS`                                               |
 
 ## Map
 
@@ -83,11 +92,13 @@ require touching game logic (`SC-4`).
 
 ## Identity & input
 
-| Constant              | Value | Status   | Notes                                       |
-| --------------------- | ----- | -------- | ------------------------------------------- |
-| `NICKNAME_MIN_LENGTH` | `2`   | PROPOSED |                                             |
-| `NICKNAME_MAX_LENGTH` | `16`  | PROPOSED | Must fit a nameplate and a scoreboard row   |
-| `ROOM_CODE_LENGTH`    | `4`   | PROPOSED | Alphabet excludes `0 O 1 I L` — `FR-GP-012` |
+| Constant                 | Value                             | Status   | Notes                                                        |
+| ------------------------ | --------------------------------- | -------- | ------------------------------------------------------------ |
+| `NICKNAME_MIN_LENGTH`    | `2`                               | PROPOSED |                                                              |
+| `NICKNAME_MAX_LENGTH`    | `16`                              | PROPOSED | Must fit a nameplate and a scoreboard row                    |
+| `ROOM_CODE_LENGTH`       | `4`                               | PROPOSED | Alphabet excludes `0 O 1 I L` — `FR-GP-012`                  |
+| `ROOM_CODE_ALPHABET`     | `23456789ABCDEFGHJKMNPQRSTUVWXYZ` | PROPOSED | The alphabet `FR-GP-012` describes by exclusion, written out |
+| `ROOM_CODE_MAX_ATTEMPTS` | `10`                              | PROPOSED | Bounds the retry when a generated code collides              |
 
 ## Camera & client
 
@@ -115,3 +126,17 @@ These follow from the constants above and must be computed, never written down t
 - Tick duration: `1000 / SERVER_TICK_HZ` → 33.33 ms
 - Snapshot interval: `1000 / SNAPSHOT_HZ` → 50 ms
 - Time to empty a magazine: `MAGAZINE_SIZE / FIRE_RATE_RPS` → 3.75 s
+- Ticks per shot: `SERVER_TICK_HZ / FIRE_RATE_RPS` → 3.75 — **not an integer.** The cooldown
+  accumulates fractionally; 3.75 is exactly representable, so it stays bit-identical across
+  engines. Rounding to 4 would give 7.5 shots/s while `FIRE_RATE_RPS` said 8 — a silent `SC-4`
+  failure
+- Reload in ticks: `ceil(RELOAD_TIME / TICK_DURATION_MS)` → 60
+- Respawn in ticks: `ceil(RESPAWN_DELAY / TICK_DURATION_MS)` → 90
+- Spawn distance squared: `MIN_SPAWN_DISTANCE ** 2` → 225, so spawn selection compares squared
+  distances and needs no `Math.sqrt`
+- Aim cast range: `WEAPON_RANGE` plus the camera-to-eye distance from `CAMERA_OFFSET` → ≈ 103.06.
+  The aim cast starts behind the eye, so it must run further to guarantee a focus point at least
+  `WEAPON_RANGE` away from the eye — `ADR-0002`
+
+Durations round **up**, so changing a duration constant can never silently shorten a duration
+below what the requirement states.

@@ -38,17 +38,14 @@ So the test is two questions:
 
 ## Waiting to be written
 
-The urgent one is **[Q-003](../../requirements/11-open-questions.md#q-003) — crosshair ray
-alignment**: `FR-UI-007` requires the crosshair to match the ray the server casts, but
-deliberately does not say how. The camera is offset from the character, so the screen-centre
-ray and the eye ray are different lines. That method must be decided before firing code is
-written in M2, not after — it is very expensive to change once combat exists.
-
-Other candidates are in
-[`requirements/11-open-questions.md`](../../requirements/11-open-questions.md).
+Candidates are in
+[`requirements/11-open-questions.md`](../../requirements/11-open-questions.md). Nothing is
+currently urgent: the two decisions that blocked a milestone — how aim is represented, and where
+the firing ray originates — are ADR-0001 and ADR-0002.
 
 ## Index
 
-| ADR                                                             | Status   | Subject                                                          |
-| --------------------------------------------------------------- | -------- | ---------------------------------------------------------------- |
-| [0001](0001-aim-enters-the-simulation-as-a-direction-vector.md) | Accepted | Aim reaches the simulation as a direction vector, never an angle |
+| ADR                                                               | Status   | Subject                                                                 |
+| ----------------------------------------------------------------- | -------- | ----------------------------------------------------------------------- |
+| [0001](0001-aim-enters-the-simulation-as-a-direction-vector.md)   | Accepted | Aim reaches the simulation as a direction vector, never an angle        |
+| [0002](0002-the-firing-ray-runs-from-the-eye-to-the-aim-point.md) | Accepted | The firing ray runs from the eye to the aim point, not along the camera |

@@ -138,12 +138,15 @@ Sent at {SNAPSHOT_HZ}. The core message.
       "am": 23, // ammo — only sent for the receiving player
     },
   ],
-  "match": { "timeLeftMs": 421000, "phase": "PLAYING" },
+  "match": { "timeLeftMs": 421000, "phase": "PLAYING" }, // "PLAYING" | "POST_MATCH"
 }
 ```
 
 **NET-009a** — Every living player is included regardless of line of sight — see
 `FR-GP-049`.
+**NET-009c** — `phase` is exactly one of `PLAYING` or `POST_MATCH`. The example above shows a
+value, not the set; `FR-GP-045` requires the second one for the results period, and an
+unenumerated field on the wire is a contract inferred from an example rather than stated.
 **NET-009b** — Slow-changing data (nicknames, teams, scores) is **not** in the snapshot.
 It arrives via `playerJoined`, `playerLeft`, and `score`.
 

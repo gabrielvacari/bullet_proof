@@ -185,6 +185,9 @@ and never shows the inside of level geometry.
 and shows a "click to resume" overlay. The match continues running on the server.
 **Acceptance:** Pressing `Esc` releases the cursor and shows the overlay; the player
 remains in the match and remains killable.
+**Note:** Bounded since `D-019`. A player who sends no input for {IDLE_TIMEOUT} is removed
+from the match exactly as a disconnect (`FR-GP-040`), so the released state cannot leave a
+stationary free kill in the arena for a whole match.
 
 ### FR-GP-022 — Mouse sensitivity
 
@@ -209,10 +212,16 @@ no weapon pickups, no weapon selection, and no secondary weapon.
 
 **Status:** REQUIRED
 **Statement:** Firing is instantaneous (hitscan): the server casts a ray from the player's
-eye position along their aim direction, up to {WEAPON_RANGE}. There are no travelling
-projectiles.
+eye position toward the point the player is aiming at, up to {WEAPON_RANGE}. There are no
+travelling projectiles.
 **Acceptance:** A shot at a target {WEAPON_RANGE} away registers in the same tick it is
 fired. A shot beyond {WEAPON_RANGE} never hits.
+**Note:** "toward the point the player is aiming at" is deliberately not "along `input.dir`".
+The camera is offset from the character, so those are different lines under an
+over-the-shoulder framing. The aim point is found by a first cast from the camera through the
+crosshair; the shot is the second cast, from the eye to that point. See
+[ADR-0002](../docs/adr/0002-the-firing-ray-runs-from-the-eye-to-the-aim-point.md), which also
+settles why camera collision (`FR-GP-020`) is excluded from the aim cast.
 
 ### FR-GP-025 — Raycast resolution order
 
