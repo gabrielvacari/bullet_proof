@@ -14,3 +14,7 @@ coverage/
 # These are per-machine or credential-bearing and are not.
 .claude/settings.local.json
 .claude/.credentials.json
+
+# Agent worktrees live inside the repository, so without this they show up as
+# untracked source and get scanned by anything that walks the tree.
+.claude/worktrees/

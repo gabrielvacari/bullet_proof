@@ -1,4 +1,4 @@
-import { defineConfig } from 'vitest/config';
+import { configDefaults, defineConfig } from 'vitest/config';
 
 /**
  * Coverage targets are PER DIRECTORY, not a single repository number.
@@ -11,6 +11,14 @@ export default defineConfig({
   test: {
     globals: true,
     include: ['**/*.{test,spec}.ts'],
+
+    /*
+     * Agent worktrees are full checkouts that live under .claude/worktrees/, inside this
+     * repository. Without this line vitest runs their test files as well as ours: three
+     * parallel agents turned a 241-test suite into 966, and every one of their source
+     * files joined the coverage denominator.
+     */
+    exclude: [...configDefaults.exclude, '.claude/worktrees/**'],
 
     coverage: {
       provider: 'v8',
@@ -73,7 +81,11 @@ export default defineConfig({
           branches: 85,
           statements: 90,
         },
-        'client/hud/**': { lines: 50, functions: 50, branches: 40, statements: 50 },
+        // Raised from the old 50% carve-out by D-021: from M3 this directory renders
+        // attacker-controlled nicknames (NFR-012), and security-relevant code should not
+        // sit below the repository's own floor. The named tests in M3's nickname-rendering
+        // contract are the real gate; this is the backstop.
+        'client/hud/**': { lines: 80, functions: 80, branches: 75, statements: 80 },
         'client/storage/**': { lines: 50, functions: 50, branches: 40, statements: 50 },
       },
     },
