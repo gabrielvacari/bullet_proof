@@ -5,6 +5,7 @@ import { WS_PATH } from '#shared/constants/index.ts';
 
 import type { Connection, Transport } from '../transport.ts';
 import {
+  CLOSE_GOING_AWAY,
   CLOSE_NORMAL,
   CLOSE_PROTOCOL_ERROR,
   CLOSE_TOO_LARGE,
@@ -32,6 +33,15 @@ let nextConnectionId = 0;
 
 export function createWsTransport(server: Server): Transport {
   let onConnection: ((connection: Connection) => void) | null = null;
+  /**
+   * The sockets this transport owns.
+   *
+   * An upgraded socket is no longer the HTTP server's business, so `server.close()` will
+   * wait on it forever without ever being able to close it. Shutting the process down
+   * cleanly therefore means the transport closing its own players' sockets first -- and
+   * without it the integration tests hang, which is how this was found.
+   */
+  const live = new Set<Connection>();
 
   server.on('upgrade', (request, socket: Duplex, head: Buffer) => {
     if (!isUpgradeAcceptable(request.headers, request.url, WS_PATH)) {
@@ -45,6 +55,10 @@ export function createWsTransport(server: Server): Transport {
     socket.write(upgradeResponse(key));
 
     const connection = attach(socket);
+    live.add(connection);
+    connection.onClose(() => {
+      live.delete(connection);
+    });
     onConnection?.(connection);
 
     // Bytes that arrived in the same packet as the handshake are already in `head`.
@@ -56,10 +70,15 @@ export function createWsTransport(server: Server): Transport {
       onConnection = handler;
     },
     close() {
+      for (const connection of [...live]) connection.close(CLOSE_GOING_AWAY);
+      live.clear();
+
       return new Promise((resolve) => {
         server.close(() => {
           resolve();
         });
+        // Anything mid-handshake is not a player and is not waited for.
+        server.closeAllConnections();
       });
     },
   };

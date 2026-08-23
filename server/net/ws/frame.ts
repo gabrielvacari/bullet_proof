@@ -31,6 +31,8 @@ export const OPCODE_PONG = 0xa;
 
 /** Normal closure -- RFC 6455 section 7.4.1. */
 export const CLOSE_NORMAL = 1000;
+/** The server is shutting down. Every match ends with the process (NFR-002). */
+export const CLOSE_GOING_AWAY = 1001;
 /** Message too big for this endpoint to process. */
 export const CLOSE_TOO_LARGE = 1009;
 /** A protocol error: an unmasked frame, an undefined opcode, an orphan continuation. */
