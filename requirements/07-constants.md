@@ -80,15 +80,21 @@ require touching game logic (`SC-4`).
 
 ## Networking
 
-| Constant                | Value    | Status   | Notes                                                                  |
-| ----------------------- | -------- | -------- | ---------------------------------------------------------------------- |
-| `SERVER_TICK_HZ`        | `30`     | PROPOSED | Fixed simulation step (33.33 ms)                                       |
-| `SNAPSHOT_HZ`           | `20`     | PROPOSED | Broadcast rate                                                         |
-| `INTERPOLATION_DELAY`   | `100 ms` | PROPOSED | ≈ 2 snapshot intervals — `NFR-008`                                     |
-| `MAX_INPUTS_PER_SECOND` | `70`     | PROPOSED | Above 60 fps to allow headroom — `NFR-010`                             |
-| `MAX_QUEUED_INPUTS`     | `10`     | PROPOSED | Per client, per tick queue depth                                       |
-| `MAX_MESSAGE_BYTES`     | `1024`   | PROPOSED | Inbound message size cap                                               |
-| `AIM_EPSILON`           | `0.001`  | PROPOSED | Tolerance when validating that `input.dir` is unit length — `NET-004c` |
+| Constant                         | Value     | Status   | Notes                                                                                                                                                                                                                                                               |
+| -------------------------------- | --------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SERVER_TICK_HZ`                 | `30`      | PROPOSED | Fixed simulation step (33.33 ms)                                                                                                                                                                                                                                    |
+| `SNAPSHOT_HZ`                    | `20`      | PROPOSED | Broadcast rate                                                                                                                                                                                                                                                      |
+| `INTERPOLATION_DELAY`            | `100 ms`  | PROPOSED | ≈ 2 snapshot intervals — `NFR-008`                                                                                                                                                                                                                                  |
+| `MAX_INPUTS_PER_SECOND`          | `70`      | PROPOSED | Above 60 fps to allow headroom — `NFR-010`                                                                                                                                                                                                                          |
+| `MAX_QUEUED_INPUTS`              | `10`      | PROPOSED | Per client, per tick queue depth                                                                                                                                                                                                                                    |
+| `MAX_MESSAGE_BYTES`              | `1024`    | PROPOSED | Inbound message size cap                                                                                                                                                                                                                                            |
+| `AIM_EPSILON`                    | `0.001`   | PROPOSED | Tolerance when validating that `input.dir` is unit length — `NET-004c`                                                                                                                                                                                              |
+| `SERVER_PORT`                    | `8787`    | PROPOSED | Port the Node process listens on. Imported by `server/index.ts` **and** `vite.config.ts`, so the dev proxy cannot drift from the server                                                                                                                             |
+| `WS_PATH`                        | `/ws`     | PROPOSED | WebSocket path, shared by those same two files                                                                                                                                                                                                                      |
+| `MAX_MALFORMED_MESSAGES`         | `10`      | PROPOSED | Malformed messages tolerated on one connection before it is closed — `NFR-011`'s "on repetition"                                                                                                                                                                    |
+| `RECONCILE_ERROR_DECAY_PER_TICK` | `0.85`    | PROPOSED | Fraction of the render-side correction error carried into the next tick — `NFR-007`'s "without a visible teleport". At {SERVER_TICK_HZ} it brings a correction below 5% of its size in ~200 ms: fast enough not to read as drift, slow enough not to read as a jump |
+| `RECONCILE_ERROR_EPSILON`        | `0.001 m` | PROPOSED | Below this the correction error is zeroed rather than decaying forever                                                                                                                                                                                              |
+| `MS_PER_SECOND`                  | `1000`    | REQUIRED | Unit conversion, not a tuning value. Named so the rate limiter needs no literal                                                                                                                                                                                     |
 
 ## Identity & input
 
@@ -137,6 +143,10 @@ These follow from the constants above and must be computed, never written down t
 - Aim cast range: `WEAPON_RANGE` plus the camera-to-eye distance from `CAMERA_OFFSET` → ≈ 103.06.
   The aim cast starts behind the eye, so it must run further to guarantee a focus point at least
   `WEAPON_RANGE` away from the eye — `ADR-0002`
+- Pending input buffer: `MAX_INPUTS_PER_SECOND` → 70. One second of unacknowledged input is the
+  most reconciliation may have to replay
+- Snapshot buffer size: `ceil(INTERPOLATION_DELAY / SNAPSHOT_INTERVAL_MS) + 2` → 4. The entries
+  remote-entity interpolation needs to always have a pair to interpolate between
 
 Durations round **up**, so changing a duration constant can never silently shorten a duration
 below what the requirement states.

@@ -6,7 +6,7 @@
 - **JSON messages in v1.** Binary encoding is `DEFERRED` — see `NET-020`.
 - Every message is an object with a `t` (type) field. Unknown types are ignored.
 - The server simulates at {SERVER_TICK_HZ} and broadcasts snapshots at {SNAPSHOT_HZ}.
-- The client sends one input message per render frame, capped at
+- The client sends **one input message per simulation tick**, capped at
   {MAX_INPUTS_PER_SECOND}.
 
 ### NET-001 — Message envelope
@@ -68,6 +68,20 @@ makes `NFR-003`'s bit-identity criterion achievable. Snapshots (`NET-009`) still
 **NET-004a** — The server never uses a client-supplied delta time. Each `input` advances
 the player by exactly one fixed server tick. Inputs arriving faster than the tick rate are
 queued, up to {MAX_QUEUED_INPUTS}; beyond that the oldest are dropped.
+
+**NET-004d** — One input per **tick**, not per rendered frame.
+
+This paragraph used to say "per render frame", which cannot hold alongside `NET-004a`. At
+60 fps against a {SERVER_TICK_HZ} server, sixty inputs arrive each second and thirty are
+consumed: the queue grows by thirty a second and overflows {MAX_QUEUED_INPUTS} in a third
+of a second, after which the oldest input is dropped on every tick, forever. That is
+permanent rubber-banding for any player whose display is faster than the tick rate — which
+is every player.
+
+The client therefore accumulates held keys across frames and emits one input per elapsed
+simulation tick, from the same fixed-timestep accumulator the prediction uses. The cap
+{MAX_INPUTS_PER_SECOND} stays what `NFR-010` makes it: a rate limit against a hostile
+client, not the normal sending rate.
 
 **NET-004b** — `fire` in the `keys` bitmask is a _request_. The server decides whether the
 shot happens, based on fire rate (`FR-GP-029`), ammo (`FR-GP-030`), reload state
