@@ -192,8 +192,8 @@ late.
 - [x] T058 [P] Create `server/integration.test.ts`: two clients connect over a **real** socket using Node's global `WebSocket`, both join, each appears in the other's snapshot, one disconnects and vanishes from the other's next snapshot. Slow, few, and the only test that catches a wiring mistake every unit test would miss
 - [x] T059 [P] Verify `M1-2` as a review step: the diff against `main` for `shared/sim/step.ts` is empty. It is a review step, not a test — a test asserting a file's contents would be a test of version control
 - [x] T060 Run `npm run verify` and confirm `shared/protocol` reports 100%, `server/**` 90% and `client/net/**` 90%, with **no threshold relaxed and no exclusion added** beyond T032's
-- [ ] T061 Walk every manual check in [quickstart.md](quickstart.md) — `M1-1`, `M1-4`, `M1-5`, `M1-6` and the `NFR-013` check
-- [ ] T062 Confirm all fourteen criteria in [spec.md § Success Criteria](spec.md#success-criteria) hold, then hand `OQ-A` and `OQ-B` to the project owner for a ruling before `v0.2.0` is tagged
+- [x] T061 Walk every manual check in [quickstart.md](quickstart.md) — `M1-1`, `M1-4`, `M1-5`, `M1-6` and the `NFR-013` check
+- [x] T062 Confirm all fourteen criteria in [spec.md § Success Criteria](spec.md#success-criteria) hold, then hand `OQ-A` and `OQ-B` to the project owner for a ruling before `v0.2.0` is tagged
 
 ---
 

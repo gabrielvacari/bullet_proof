@@ -4,7 +4,7 @@
 
 **Created**: 2026-08-22
 
-**Status**: Implemented — automated criteria green; manual criteria await the project owner
+**Status**: **Complete.** Automated criteria green, manual criteria confirmed by the project owner on 2026-09-02, tagged `v0.1.0`.
 
 **Demo criterion**: One player, one browser, walks around the arena in third person.
 
