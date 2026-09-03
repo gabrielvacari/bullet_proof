@@ -118,7 +118,7 @@ export function createRoom(id: string, map: GameMap): Room {
       player.lastSeq = queued.seq;
     }
 
-    player.state = step(player.state, input, map);
+    player.state = step(player.state, input, map).state;
   }
 
   /**

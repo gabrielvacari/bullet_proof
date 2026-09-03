@@ -73,7 +73,7 @@ describe('the player cannot leave the arena', () => {
     (index, dir) => {
       let state = spawnState([0, 0, 0]);
       for (let tick = 0; tick < 600; tick += 1) {
-        state = step(state, command(dir), map);
+        state = step(state, command(dir), map).state;
         assertInside(state, `heading ${String(index)} tick ${String(tick)}`);
       }
     },
@@ -84,7 +84,7 @@ describe('the player cannot leave the arena', () => {
     (index, dir) => {
       let state = spawnState([0, 0, 0]);
       for (let tick = 0; tick < 600; tick += 1) {
-        state = step(state, command(dir, { jump: state.grounded }), map);
+        state = step(state, command(dir, { jump: state.grounded }), map).state;
         assertInside(state, `jumping heading ${String(index)} tick ${String(tick)}`);
       }
     },
@@ -95,7 +95,7 @@ describe('the player cannot leave the arena', () => {
     let state = spawnState([-4, 0, -8]);
     for (let tick = 0; tick < 400; tick += 1) {
       const dir = tick % 2 === 0 ? ([-1, 0, 0] as Vec3) : ([0, 0, -1] as Vec3);
-      state = step(state, command(dir), map);
+      state = step(state, command(dir), map).state;
       assertInside(state, `corner tick ${String(tick)}`);
     }
   });
@@ -111,7 +111,7 @@ describe('the player cannot leave the arena', () => {
       let state = spawnState(centre);
       for (const dir of HEADINGS) {
         for (let tick = 0; tick < 60; tick += 1) {
-          state = step(state, command(dir, { jump: state.grounded }), map);
+          state = step(state, command(dir, { jump: state.grounded }), map).state;
           assertInside(state, 'block traversal');
         }
       }
@@ -121,7 +121,7 @@ describe('the player cannot leave the arena', () => {
   it('never ends up inside the perimeter geometry itself', () => {
     let state = spawnState([0, 0, 0]);
     for (let tick = 0; tick < 600; tick += 1) {
-      state = step(state, command([1, 0, 0]), map);
+      state = step(state, command([1, 0, 0]), map).state;
     }
     // Stopped by its own half-width, not embedded in the wall.
     expect(state.pos[0]).toBeLessThanOrEqual(map.bounds.max[0] - PLAYER_RADIUS + 1e-6);

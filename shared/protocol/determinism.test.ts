@@ -83,7 +83,7 @@ function recorded(): { keys: number; dir: Vec3 }[] {
 function predictLocally(frames: readonly { keys: number; dir: Vec3 }[]): PlayerState {
   let state = start();
   for (const frame of frames) {
-    state = step(state, inputFromKeys(frame.keys, frame.dir), MAP);
+    state = step(state, inputFromKeys(frame.keys, frame.dir), MAP).state;
   }
   return state;
 }
@@ -107,7 +107,7 @@ function applyOverTheWire(frames: readonly { keys: number; dir: Vec3 }[]): Playe
       );
     }
 
-    state = step(state, inputFromKeys(received.keys, received.dir), MAP);
+    state = step(state, inputFromKeys(received.keys, received.dir), MAP).state;
   });
 
   return state;
@@ -126,7 +126,7 @@ describe('NFR-003 across the wire', () => {
     let remote = start();
 
     frames.forEach((frame, index) => {
-      local = step(local, inputFromKeys(frame.keys, frame.dir), MAP);
+      local = step(local, inputFromKeys(frame.keys, frame.dir), MAP).state;
 
       const message: InputMessage = {
         t: 'input',
@@ -136,7 +136,7 @@ describe('NFR-003 across the wire', () => {
       };
       const received = parseClientMessage(decode(encode(message)));
       if (received === null || received.t !== 'input') throw new Error('rejected');
-      remote = step(remote, inputFromKeys(received.keys, received.dir), MAP);
+      remote = step(remote, inputFromKeys(received.keys, received.dir), MAP).state;
 
       expect(remote).toEqual(local);
     });

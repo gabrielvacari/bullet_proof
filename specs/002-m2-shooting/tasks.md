@@ -128,19 +128,19 @@ and refill. No second player and no raycast involved.
 
 ### Tests for User Story 2 ⚠️ write first, confirm they fail
 
-- [ ] T021 [P] [US2] Add fire-cadence tests to `shared/sim/step.test.ts`: over 300 ticks of held fire the shot count matches {FIRE_RATE_RPS} exactly — asserting the **average**, not any single interval, because the interval is 3.75 ticks ([research.md § R4](research.md#r4--durations-in-a-simulation-with-no-clock)). Also assert that a client "firing" on every single tick produces no more shots than one firing at the permitted rate — `M2-7`
-- [ ] T022 [P] [US2] Add magazine tests to `shared/sim/step.test.ts`: the count falls by exactly one per emitted `ShotIntent`, never below zero, and no input sequence permanently disarms the player — `FR-GP-030`
-- [ ] T023 [P] [US2] Add reload tests to `shared/sim/step.test.ts`: `R` on a partial magazine starts a reload; `R` on a full magazine does **nothing at all** — not a zero-length reload; firing an empty magazine starts one; no shot is produced during one; fire neither cancels nor restarts one; the magazine refills after exactly `RELOAD_TICKS` — `M2-8`
-- [ ] T024 [P] [US2] Add death and respawn tests to `shared/sim/step.test.ts`: a dead player's input is ignored entirely — no movement, no fire, no reload — and only `respawnTicks` advances; death cancels an in-progress reload; respawn restores {PLAYER_MAX_HEALTH} and {MAGAZINE_SIZE} with no pending reload — `M2-9`, `FR-GP-032`
+- [x] T021 [P] [US2] Add fire-cadence tests to `shared/sim/step.test.ts`: over 300 ticks of held fire the shot count matches {FIRE_RATE_RPS} exactly — asserting the **average**, not any single interval, because the interval is 3.75 ticks ([research.md § R4](research.md#r4--durations-in-a-simulation-with-no-clock)). Also assert that a client "firing" on every single tick produces no more shots than one firing at the permitted rate — `M2-7`
+- [x] T022 [P] [US2] Add magazine tests to `shared/sim/step.test.ts`: the count falls by exactly one per emitted `ShotIntent`, never below zero, and no input sequence permanently disarms the player — `FR-GP-030`
+- [x] T023 [P] [US2] Add reload tests to `shared/sim/step.test.ts`: `R` on a partial magazine starts a reload; `R` on a full magazine does **nothing at all** — not a zero-length reload; firing an empty magazine starts one; no shot is produced during one; fire neither cancels nor restarts one; the magazine refills after exactly `RELOAD_TICKS` — `M2-8`
+- [x] T024 [P] [US2] Add death and respawn tests to `shared/sim/step.test.ts`: a dead player's input is ignored entirely — no movement, no fire, no reload — and only `respawnTicks` advances; death cancels an in-progress reload; respawn restores {PLAYER_MAX_HEALTH} and {MAGAZINE_SIZE} with no pending reload — `M2-9`, `FR-GP-032`
 
 ### Implementation for User Story 2
 
-- [ ] T025 [US2] Widen `step()`'s return in `shared/sim/step.ts` to `StepResult` (`{ state, shot }`) per [contracts/combat-api.md](contracts/combat-api.md#stepstate-input-map--extended) — a deliberate breaking change to M0's contract
-- [ ] T026 [US2] Add the dead branch to `shared/sim/step.ts` (state machine rule 1): decrement `respawnTicks`, respawn at zero, and return before anything else runs — `FR-GP-036`, `FR-GP-037`
-- [ ] T027 [US2] Add the countdown decrements and reload completion to `shared/sim/step.ts` (rules 2–3), each floored at zero, refilling the magazine when `reloadTicks` reaches zero
-- [ ] T028 [US2] Add the reload-start rules to `shared/sim/step.ts` (rules 4–6): reloading blocks firing; `input.reload` on a partial magazine starts one; firing an empty magazine starts one — `FR-GP-031`
-- [ ] T029 [US2] Add the fire rule to `shared/sim/step.ts` (rule 7): decrement the magazine, **add** `TICKS_PER_SHOT` to `fireCooldown` rather than assigning it, and emit a `ShotIntent` carrying `eye`, `cameraEye` and `dir` — `FR-GP-024`, `FR-GP-029`
-- [ ] T030 [US2] Update every existing `step()` caller and test for `StepResult` — `client/boot/main.ts`, `shared/sim/step.test.ts`, `shared/sim/containment.test.ts` — and confirm M0's determinism, purity and containment tests still pass unchanged in substance
+- [x] T025 [US2] Widen `step()`'s return in `shared/sim/step.ts` to `StepResult` (`{ state, shot }`) per [contracts/combat-api.md](contracts/combat-api.md#stepstate-input-map--extended) — a deliberate breaking change to M0's contract
+- [x] T026 [US2] Add the dead branch to `shared/sim/step.ts` (state machine rule 1): decrement `respawnTicks`, respawn at zero, and return before anything else runs — `FR-GP-036`, `FR-GP-037`
+- [x] T027 [US2] Add the countdown decrements and reload completion to `shared/sim/step.ts` (rules 2–3), each floored at zero, refilling the magazine when `reloadTicks` reaches zero
+- [x] T028 [US2] Add the reload-start rules to `shared/sim/step.ts` (rules 4–6): reloading blocks firing; `input.reload` on a partial magazine starts one; firing an empty magazine starts one — `FR-GP-031`
+- [x] T029 [US2] Add the fire rule to `shared/sim/step.ts` (rule 7): decrement the magazine, **add** `TICKS_PER_SHOT` to `fireCooldown` rather than assigning it, and emit a `ShotIntent` carrying `eye`, `cameraEye` and `dir` — `FR-GP-024`, `FR-GP-029`
+- [x] T030 [US2] Update every existing `step()` caller and test for `StepResult` — `client/boot/main.ts`, `shared/sim/step.test.ts`, `shared/sim/containment.test.ts` — and confirm M0's determinism, purity and containment tests still pass unchanged in substance
 
 **Checkpoint**: the weapon works end to end for one player. `M2-7`, `M2-8` and `M2-9` hold, and
 nothing yet depends on `Q-003`.
