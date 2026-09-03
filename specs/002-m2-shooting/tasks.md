@@ -48,13 +48,35 @@ of the way before anyone is mid-implementation waiting on them.
 it.
 
 - [ ] T001 Verify **Gate 1**: M1's demo criterion in [08-roadmap.md](../../requirements/08-roadmap.md) is genuinely met and `v0.2.0` is tagged on `main` — two browsers see each other move smoothly, with no remote-player jitter (Constitution Principle V)
-- [ ] T002 Verify every row of [plan.md § Dependencies on M1](plan.md#dependencies-on-m1) exists, in particular that the snapshot builder can emit a **per-recipient** `am` field and does not serialise one JSON string for every socket (`NET-009`)
-- [ ] T003 ⛔ **Gate 2**: the project owner decides [`Q-003`](../../requirements/11-open-questions.md#q-003) from [research.md § R1](research.md#r1--where-does-the-firing-ray-originate-q-003--blocking) and merges the ADR into `docs/adr/`; add it to [`docs/adr/README.md`](../../docs/adr/README.md)'s index, remove that file's "Waiting to be written" paragraph, and delete `Q-003` from `requirements/11-open-questions.md`
-- [ ] T004 With the project owner's approval, add the thirteen constants from [data-model.md § New constants](data-model.md#new-constants) to `requirements/07-constants.md` — the eight hit-volume fractions in the Weapon or Player section, the five derived values under "Derived values — do not hardcode" (Constitution Principle IV)
-- [ ] T005 Confirm with the project owner that `FR-GP-032` and `FR-GP-038` — both `PROPOSED` and both load-bearing for `M2-8` and `M2-10` — are what M2 should build; changing either after Phase 2 changes tested behaviour rather than a constant
+- [x] T002 Verify every row of [plan.md § Dependencies on M1](plan.md#dependencies-on-m1) exists, in particular that the snapshot builder can emit a **per-recipient** `am` field and does not serialise one JSON string for every socket (`NET-009`)
+- [x] T003 ⛔ **Gate 2**: the project owner decides [`Q-003`](../../requirements/11-open-questions.md#q-003) from [research.md § R1](research.md#r1--where-does-the-firing-ray-originate-q-003--blocking) and merges the ADR into `docs/adr/`; add it to [`docs/adr/README.md`](../../docs/adr/README.md)'s index, remove that file's "Waiting to be written" paragraph, and delete `Q-003` from `requirements/11-open-questions.md`
+- [x] T004 With the project owner's approval, add the thirteen constants from [data-model.md § New constants](data-model.md#new-constants) to `requirements/07-constants.md` — the eight hit-volume fractions in the Weapon or Player section, the five derived values under "Derived values — do not hardcode" (Constitution Principle IV)
+- [x] T005 Confirm with the project owner that `FR-GP-032` and `FR-GP-038` — both `PROPOSED` and both load-bearing for `M2-8` and `M2-10` — are what M2 should build; changing either after Phase 2 changes tested behaviour rather than a constant
 
 **Checkpoint**: M2 is allowed to start, the numbers it needs exist, and the one decision that
 shapes the raycast has been taken by the person entitled to take it.
+
+> **Status 2026-09-02 — four of five closed; `T001` is the only thing holding Gate 1 shut.**
+>
+> `T002` — all seven rows of [plan.md § Dependencies on M1](plan.md#dependencies-on-m1) hold on
+> `main`. The row flagged as most likely to surprise does not: `broadcastSnapshot()` in
+> `server/room/room.ts` already encodes **once per recipient**, because `ack` is per-client, and
+> its comment names that seam as the one `am` will use. Player ids are a monotonic `c_N` counter
+> from `server/net/ws-transport.ts`, so `M2-12`'s ascending-id tick order stays reproducible.
+>
+> `T003` — `ADR-0002` is merged and indexed, and `Q-003` is gone from `11-open-questions.md`.
+> The "Waiting to be written" section was **rewritten rather than deleted**: it is a standing
+> section, and it now records that neither remaining candidate is urgent. The stale claim the
+> task meant to remove — that the firing-ray ADR was still owed — is what went.
+>
+> `T004` — all thirteen constants are in `07-constants.md`. The eight fractions are listed by
+> name; the five derived values sit under "Derived values — do not hardcode" written as
+> derivations rather than as bare identifiers, matching that section's existing entries.
+>
+> `T005` — `FR-GP-032` and `FR-GP-038` both read `REQUIRED`.
+>
+> `T001` needs a human at two browsers and a `v0.2.0` tag. Constitution Principle V keeps every
+> task below this line shut until then — including all of Phase 2.
 
 ---
 
