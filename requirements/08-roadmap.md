@@ -83,7 +83,8 @@ current one's criterion is genuinely met.
 - Loading screen, disconnect screen, unsupported-environment screen
   (`FR-UI-002`, `FR-UI-013`, `FR-UI-014`)
 - Performance pass to {TARGET_FPS} with a full room (`NFR-014`)
-- Empty room cleanup (`FR-GP-046`)
+- Verify empty room cleanup still holds under a full session (`FR-GP-046` — **built in M3**,
+  see `D-020`)
 - `README` with screenshots, a GIF, and an architecture write-up — for a portfolio piece
   this is not optional polish, it is the deliverable
 - `assets/CREDITS.md` with every licence

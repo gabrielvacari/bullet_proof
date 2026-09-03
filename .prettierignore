@@ -13,6 +13,7 @@ package-lock.json
 .specify/integration.json
 .specify/feature.json
 .claude/skills/
+.agents/
 
 # NOT ignored, and deliberately so -- these are authored by us, not vendored:
 #   .specify/memory/constitution.md

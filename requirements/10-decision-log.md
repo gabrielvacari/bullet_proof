@@ -165,3 +165,44 @@ same change that landed the first `shared/constants` test, as `Q-008` required.
 misconfigured `include` — now fails CI instead of passing silently. The cost is that any future
 state in which the repository legitimately has no tests will fail the gate; there is no such
 state after M0, which is why the flag could go.
+
+### D-019 — An idle player is removed, not accounted around
+
+**Resolves:** `Q-006`. **Blocked:** M3.
+**Alternatives:** Leave `FR-GP-021` as-is (zero cost, but free kills stay farmable and a
+half-dropped socket looks identical to an idle player, so the arena fills with statues over a long
+session); hide idle players from scoring (adds a replicated idle flag and carves an exception into
+`FR-GP-041`, does **not** remove the free kill — only its bookkeeping — and creates a fresh
+exploit: idle deliberately to deny an enemy points); make an unlocked player untargetable
+(rejected outright — it contradicts `FR-GP-021`'s own acceptance criterion and hands every player a
+one-key invulnerability button).
+**Decision:** A player who sends no valid input for {IDLE_TIMEOUT} is removed from the match and
+treated exactly as a disconnect.
+**Consequence:** It removes the stationary body instead of accounting around it, and it adds no new
+synchronised state — `FR-GP-040` already specifies clean removal within one tick with no ghost body
+and no ghost hit volume, and `D-009` already says a returning player is a new player with a new ID
+and no score. The whole change is a counter and a close path. `FR-GP-021` is now bounded and says
+so. The real risk is a timeout so short that it punishes someone who tabbed away for a moment,
+which is a more annoying complaint than the problem it fixes — hence a deliberately generous
+{IDLE_TIMEOUT}, and it is a constants edit to change (`SC-4`). M3 needs somewhere for the removed
+client to land; `FR-UI-013`'s disconnect screen is M5, so M3 shows the generic disconnected state.
+
+### D-020 — M3 owns empty-room cleanup
+
+**Resolves:** an ambiguity in [08-roadmap.md](08-roadmap.md), which listed `FR-GP-046` under both
+M3 and M5.
+**Decision:** M3 owns `FR-GP-046`. M5's bullet becomes a verification pass, not new work.
+**Consequence:** M3 is the milestone that first creates rooms dynamically — M1 has one hardcoded
+room — so a room lifecycle without destruction leaks a tick loop per abandoned room from the moment
+M3 lands. `FR-GP-046`'s own acceptance criterion, that no timers, intervals or simulation ticks
+continue to run for a destroyed room, is a property of the code M3 writes, not something M5 can
+bolt on afterwards.
+
+### D-021 — `client/hud/**` is held to the repository floor, not to 50%
+
+**Decision:** `vitest.config.ts` raises `client/hud/**` from its 50% carve-out to the same floor as
+everything else unlisted.
+**Consequence:** M3 is the milestone that first renders attacker-controlled text — nicknames in the
+scoreboard, the kill feed and the results screen (`NFR-012`). A directory holding security-relevant
+code should not sit below the repository's own floor. The named tests in M3's nickname-rendering
+contract remain the real gate; this is the backstop, not the proof.

@@ -41,8 +41,11 @@ exception in one room not to stop another's.
   the loop inside `step()` would make it impossible to replay unacknowledged inputs during
   reconciliation (`NFR-007`).
 - **Interpolation** (`NFR-008`) — rendering concern.
-- **Spawn selection** (`FR-GP-038`) — M2, and server-side only, because it needs randomness that
-  `NFR-004` bars from the simulation.
+- **Spawn selection** (`FR-GP-038`) — M2, and server-side only, because choosing the spawn that
+  maximises distance to the nearest living enemy requires knowing where every player is. The
+  simulation sees one player at a time. It is an argmax, not a draw: the randomness in spawning
+  belongs to `FR-GP-004`'s team-assignment tie-break, which is M3's and also lives outside the
+  simulation step (`NFR-004`).
 
 ---
 

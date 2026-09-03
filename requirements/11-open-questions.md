@@ -31,22 +31,6 @@ They cannot be validated without playing. Most likely to be wrong:
   time-to-kill, which may be brutally fast in practice.
 - `INTERPOLATION_DELAY` — trades smoothness against how stale remote players look.
 
-### Q-003 — Crosshair-to-ray alignment
-
-**Blocks:** M2. **Severity:** medium — it is a real gameplay bug if handled badly.
-
-The camera is offset from the character (`CAMERA_OFFSET`), so the ray from the player's eye
-and the ray through the screen centre are not the same line. Three approaches:
-
-1. Cast from the camera through the crosshair, then use that point as the aim target for a
-   ray originating at the player's eye. Standard, and what most third-person shooters do.
-2. Cast straight from the eye along the camera's forward direction. Simplest, but shots
-   visibly miss what the crosshair covers at close range.
-3. Offset the crosshair on screen to match the eye ray. Accurate, but looks wrong.
-
-**Recommendation:** (1). Decide and record it as an ADR before writing the firing code —
-this choice is very expensive to change afterwards.
-
 ### Q-004 — Do bots get built?
 
 **Blocks:** nothing. **Severity:** medium for the portfolio goal.
@@ -54,14 +38,6 @@ this choice is very expensive to change afterwards.
 A visitor who arrives when nobody is online currently gets an empty arena. Simple bots
 would fix the worst failure mode of a multiplayer portfolio demo. Currently `DEFERRED`
 ([09-out-of-scope.md](09-out-of-scope.md)). Worth revisiting after M5, alongside Q-001.
-
-### Q-006 — What happens to a player idle in pointer-lock-released state?
-
-**Blocks:** M3. **Severity:** low.
-
-`FR-GP-021` keeps a player in the match and killable after they press `Esc`. Over a long
-match this leaves a stationary free kill in the arena. Options: leave as-is; kick after N
-seconds of no input; or hide them from scoring. Not urgent, but it will look bad in a demo.
 
 ### Q-009 — Repository settings do not enforce the branching model
 
