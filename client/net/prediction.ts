@@ -48,7 +48,7 @@ export function predict(
   input: PlayerInput,
   map: GameMap,
 ): PlayerState {
-  return step(state, input, map);
+  return step(state, input, map).state;
 }
 
 /** Adds a sent input to the replay buffer, bounded so a dead connection cannot grow it. */
@@ -81,7 +81,7 @@ export function reconcile(
   const remaining = pending.filter((entry) => entry.seq > ack);
 
   let state = authoritative;
-  for (const entry of remaining) state = step(state, entry.input, map);
+  for (const entry of remaining) state = step(state, entry.input, map).state;
 
   return { state, pending: remaining, error: sub(current.pos, state.pos) };
 }

@@ -59,8 +59,18 @@ describe('inputFromKeys', () => {
     expect(none.crouch).toBe(false);
   });
 
-  it('accepts and ignores fire and reload, which are M2 requests (NET-004b)', () => {
-    expect(inputFromKeys(KEY_FIRE | KEY_RELOAD, DIR)).toEqual(inputFromKeys(0, DIR));
+  it('decodes fire and reload as requests, not outcomes (NET-004b)', () => {
+    const requested = inputFromKeys(KEY_FIRE | KEY_RELOAD, DIR);
+    expect(requested.fire).toBe(true);
+    expect(requested.reload).toBe(true);
+    // They are the only thing that changes: a fire request must not move the player.
+    expect(requested.move).toEqual(inputFromKeys(0, DIR).move);
+  });
+
+  it('leaves both false when neither bit is set', () => {
+    const idle = inputFromKeys(0, DIR);
+    expect(idle.fire).toBe(false);
+    expect(idle.reload).toBe(false);
   });
 
   it('passes the aim vector through untouched -- it is already validated', () => {
@@ -84,6 +94,10 @@ describe('neutralInput', () => {
       jump: false,
       crouch: false,
       sprint: false,
+      // A player who sent nothing is not asking to fire. Repeating a held trigger would
+      // let "hold fire, then pull the cable" empty a magazine at the server's expense.
+      fire: false,
+      reload: false,
     });
   });
 

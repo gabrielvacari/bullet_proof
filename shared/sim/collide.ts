@@ -1,4 +1,5 @@
 import {
+  CROUCH_HEIGHT,
   GROUND_PROBE_DISTANCE,
   PLAYER_HEIGHT,
   PLAYER_RADIUS,
@@ -32,6 +33,17 @@ export interface Collision {
 }
 
 /** The player's collision box, given its base position and current height. */
+/**
+ * The capsule's current height. The one place the stance-to-height rule lives.
+ *
+ * Movement, the ground probe and M2's hit volumes all need it, and a second copy is how
+ * hit volumes come to describe a capsule of a different size than the one that collides
+ * -- which is a player being shot somewhere their body is not.
+ */
+export function capsuleHeight(crouching: boolean): number {
+  return crouching ? CROUCH_HEIGHT : PLAYER_HEIGHT;
+}
+
 export function playerBox(pos: Vec3, height: number): Aabb {
   return {
     min: [pos[0] - PLAYER_RADIUS, pos[1], pos[2] - PLAYER_RADIUS],

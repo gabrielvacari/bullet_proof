@@ -43,6 +43,23 @@ describe('shared/ contains source to check', () => {
   it('found files', () => {
     expect(FILES.length).toBeGreaterThan(0);
   });
+
+  /**
+   * The scan finds whatever is on disk, which means a module that stopped being scanned --
+   * moved, renamed, or dropped by a directory the walk no longer descends into -- would
+   * make this file quietly weaker while still reporting green. Naming the combat modules
+   * turns that silent loss into a failure.
+   */
+  const COMBAT_MODULES = [
+    join('shared', 'math', 'ray.ts'),
+    join('shared', 'sim', 'hitvolume.ts'),
+    join('shared', 'sim', 'damage.ts'),
+    join('shared', 'sim', 'spawn.ts'),
+  ];
+
+  it.each(COMBAT_MODULES)('scans %s', (module) => {
+    expect(FILES.map((file) => file.path)).toContain(module);
+  });
 });
 
 describe.each(FILES)('$path', ({ text }) => {

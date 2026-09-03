@@ -73,6 +73,8 @@ describe('aimDirection', () => {
           jump: false,
           crouch: false,
           sprint: false,
+          fire: false,
+          reload: false,
         });
         expect(accepted).not.toBeNull();
       }

@@ -11,6 +11,8 @@ function valid(overrides: Record<string, unknown> = {}): Record<string, unknown>
     jump: false,
     crouch: false,
     sprint: false,
+    fire: false,
+    reload: false,
     ...overrides,
   };
 }
@@ -24,6 +26,8 @@ describe('accepts well-formed input', () => {
       jump: false,
       crouch: false,
       sprint: false,
+      fire: false,
+      reload: false,
     });
   });
 
@@ -115,5 +119,87 @@ describe('rejects inputs that would buy an advantage', () => {
   it('rejects aim outside the pitch cone — FR-GP-019', () => {
     expect(validateInput(valid({ dir: [0, 1, 0] }))).toBeNull();
     expect(validateInput(valid({ dir: [0, -1, 0] }))).toBeNull();
+  });
+});
+
+describe('the two combat intent flags', () => {
+  it('carries fire and reload through when they are booleans', () => {
+    const result = validateInput(valid({ fire: true, reload: true }));
+    expect(result?.fire).toBe(true);
+    expect(result?.reload).toBe(true);
+  });
+
+  it('rejects anything that is not a boolean, without coercing it', () => {
+    // A truthy value is not a boolean. Coercing here would let a client express
+    // intent the protocol does not define, and NFR-011 asks for the opposite.
+    for (const notBoolean of [1, 0, 'true', '', null, undefined, [], {}]) {
+      expect(validateInput(valid({ fire: notBoolean }))).toBeNull();
+      expect(validateInput(valid({ reload: notBoolean }))).toBeNull();
+    }
+  });
+
+  it('rejects input missing either flag', () => {
+    const withoutFire = valid();
+    delete withoutFire['fire'];
+    expect(validateInput(withoutFire)).toBeNull();
+
+    const withoutReload = valid();
+    delete withoutReload['reload'];
+    expect(validateInput(withoutReload)).toBeNull();
+  });
+});
+
+describe('no accepted input can assert an outcome (NET-007, M2-3)', () => {
+  /**
+   * The point of this test is not that these fields are rejected -- it is that they
+   * cannot be expressed. PlayerInput has no field for any of them, so hasExactKeys turns
+   * every one into a rejected message rather than a validated one with a field to
+   * ignore. A validator that filtered them would be strictly weaker than a type in which
+   * they cannot appear.
+   */
+  it('rejects any attempt to smuggle a result through the input', () => {
+    const outcomes = [
+      'health',
+      'hp',
+      'damage',
+      'kill',
+      'kills',
+      'killed',
+      'victim',
+      'victimId',
+      'target',
+      'targetId',
+      'hit',
+      'region',
+      'score',
+      'pos',
+      'position',
+      'vel',
+      'velocity',
+      'magazine',
+      'ammo',
+      'am',
+      'dead',
+      'alive',
+      'respawnTicks',
+      'team',
+    ];
+    for (const field of outcomes) {
+      expect(validateInput(valid({ [field]: 1 }))).toBeNull();
+    }
+  });
+
+  it('accepts only the seven fields the simulation acts on', () => {
+    const accepted = validateInput(valid());
+    expect(accepted).not.toBeNull();
+    expect(Object.keys(accepted as object).sort()).toEqual([
+      'crouch',
+      'dir',
+      'fire',
+      'jump',
+      'move',
+      'reload',
+      'sprint',
+    ]);
   });
 });

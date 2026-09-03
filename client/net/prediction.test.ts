@@ -7,6 +7,7 @@ import {
   RECONCILE_ERROR_EPSILON,
 } from '#shared/constants/index.ts';
 import { loadMap } from '#shared/map/load.ts';
+import { spawnedPlayer } from '#shared/sim/step.ts';
 import type { GameMap } from '#shared/map/types.ts';
 import type { Vec3 } from '#shared/math/vec3.ts';
 import { KEY_FORWARD, KEY_LEFT, inputFromKeys } from '#shared/protocol/keys.ts';
@@ -39,7 +40,7 @@ const SPAWN_POS = SPAWN.pos;
 const DIR: Vec3 = [0, 0, -1];
 
 function start(): PlayerState {
-  return { pos: SPAWN_POS, vel: [0, 0, 0], grounded: false, crouching: false };
+  return spawnedPlayer(SPAWN_POS);
 }
 
 /** The client's own sequence of inputs, as it would have sent them. */

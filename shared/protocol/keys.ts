@@ -22,9 +22,9 @@ export const KEY_RIGHT = 8;
 export const KEY_JUMP = 16;
 export const KEY_SPRINT = 32;
 export const KEY_CROUCH = 64;
-/** NET-004b: a *request*. The server decides whether the shot happens. Ignored until M2. */
+/** NET-004b: a *request*. The server decides whether the shot happens. */
 export const KEY_FIRE = 128;
-/** NET-004b. Ignored until M2. */
+/** NET-004b: also a request. A full magazine simply does nothing (FR-GP-031). */
 export const KEY_RELOAD = 256;
 
 /** Every defined bit. A `keys` value with anything above this is not this protocol's. */
@@ -69,6 +69,8 @@ export function inputFromKeys(keys: number, dir: Vec3): PlayerInput {
     jump: held(keys, KEY_JUMP),
     crouch: held(keys, KEY_CROUCH),
     sprint: held(keys, KEY_SPRINT),
+    fire: held(keys, KEY_FIRE),
+    reload: held(keys, KEY_RELOAD),
   };
 }
 
@@ -82,5 +84,13 @@ export function inputFromKeys(keys: number, dir: Vec3): PlayerInput {
  * nothing, which is what server authority means (NFR-001).
  */
 export function neutralInput(dir: Vec3): PlayerInput {
-  return { move: [0, 0, 0], dir, jump: false, crouch: false, sprint: false };
+  return {
+    move: [0, 0, 0],
+    dir,
+    jump: false,
+    crouch: false,
+    sprint: false,
+    fire: false,
+    reload: false,
+  };
 }

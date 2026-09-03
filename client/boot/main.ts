@@ -2,6 +2,7 @@ import { INTERPOLATION_DELAY } from '#shared/constants/index.ts';
 import { loadMap } from '#shared/map/load.ts';
 import { type Vec3, ZERO, add } from '#shared/math/vec3.ts';
 import { inputFromKeys } from '#shared/protocol/keys.ts';
+import { spawnedPlayer } from '#shared/sim/step.ts';
 import type { PlayerState } from '#shared/sim/types.ts';
 
 import { aimDirection } from '#client/input/aim.ts';
@@ -60,12 +61,7 @@ const view = createPlayerView(stage.scene);
 const remotes = createRemoteViews(stage.scene);
 const session = startInputSession(canvas, overlay);
 
-let current: PlayerState = {
-  pos: spawn.pos,
-  vel: [0, 0, 0],
-  grounded: false,
-  crouching: false,
-};
+let current: PlayerState = spawnedPlayer(spawn.pos);
 let previous: PlayerState = current;
 
 /** Everything sent and not yet acknowledged, for replay on reconciliation (NFR-007). */
@@ -100,12 +96,7 @@ const socket = connect({
     selfId = message.playerId;
     // Prediction starts from the transform the server assigned, so both sides begin from
     // the same state -- NFR-003's precondition (FR-GP-014).
-    current = {
-      pos: message.spawn.pos,
-      vel: [0, 0, 0],
-      grounded: false,
-      crouching: false,
-    };
+    current = spawnedPlayer(message.spawn.pos);
     previous = current;
     pending = [];
     renderError = ZERO;
@@ -119,6 +110,10 @@ const socket = connect({
 
     // NFR-007: adopt the server's state for ourselves, replay what it has not yet seen.
     const authoritative: PlayerState = {
+      // Combat state is still locally predicted: the snapshot does not carry hp or am
+      // until T115, and T120 makes them part of the correction. Carrying the predicted
+      // values forward keeps the weapon usable meanwhile without inventing authority.
+      ...current,
       pos: mine.p,
       vel: mine.v,
       grounded: (mine.st & 1) !== 0,
