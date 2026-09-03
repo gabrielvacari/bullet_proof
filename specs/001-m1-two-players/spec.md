@@ -4,7 +4,7 @@
 
 **Created**: 2026-08-22
 
-**Status**: Implemented — automated criteria green; `OQ-B` closed by the owner; manual criteria and `OQ-A` still await them
+**Status**: Implemented — automated criteria green; `OQ-A` and `OQ-B` both closed by the owner; the manual criteria still await them
 
 **Demo criterion**: Two browsers see each other move smoothly.
 
@@ -385,11 +385,12 @@ Stated so they can be corrected now rather than discovered later:
 
 ## Open questions raised by this milestone
 
-Recorded here rather than guessed, per Constitution Principle I. Neither is a
-`11-open-questions.md` entry today; both need the project owner's ruling, and each names the
-recommendation M1 proceeds on in the meantime.
+Recorded here rather than guessed, per Constitution Principle I. Neither was a
+`11-open-questions.md` entry; both needed the project owner's ruling, and each named the
+recommendation M1 proceeded on in the meantime. **Both are now closed** — the closures are kept
+below rather than deleted, because what each one decided is still load-bearing for M2.
 
-### OQ-A — How often does the client send `input`? ⚠️ **affects correctness, not taste**
+### ~~OQ-A~~ — How often does the client send `input`? · **CLOSED**
 
 [06-network-protocol.md](../../requirements/06-network-protocol.md)'s Model section says the
 client sends **one input message per render frame**, capped at {MAX_INPUTS_PER_SECOND}.
@@ -410,6 +411,17 @@ stated role as a cap with better than 2× headroom for jitter bursts, and {MAX_Q
 absorbs bursts instead of overflowing on every frame. No numbered requirement changes; only the
 un-numbered Model bullet reads differently, and the project owner should amend that prose to say
 "per simulation tick".
+
+**Closed 2026-09-02: the project owner amended the prose.**
+[06-network-protocol.md](../../requirements/06-network-protocol.md)'s Model bullet now reads _one
+input message per simulation tick_, and the new `NET-004d` records the arithmetic so the next
+reader need not re-derive it — sixty inputs produced against thirty consumed overflows
+{MAX_QUEUED_INPUTS} in a third of a second, and every player's display is faster than the tick
+rate. No numbered requirement changed meaning, and {MAX_INPUTS_PER_SECOND} keeps its `NFR-010`
+role as a rate limit against a hostile client rather than the normal sending rate.
+
+M1's implementation already did this: `client/boot/main.ts` emits one `input` from inside the
+fixed-timestep substep loop that drives prediction, so no code changed when the ruling landed.
 
 ### ~~OQ-B~~ — The WebSocket transport, and the dependency it would need · **CLOSED**
 
@@ -449,11 +461,13 @@ at the frame level, so an oversized message never reaches a buffer we own (`NFR-
   needs no session tokens and no slot reservation.
 - [`D-003`](../../requirements/10-decision-log.md) — prediction and reconciliation without lag
   compensation. `NFR-009` is settled, not open.
+- [ADR-0002](../../docs/adr/0002-the-firing-ray-runs-from-the-eye-to-the-aim-point.md) — the
+  firing ray runs from the eye to the aim point, closing `Q-003`. Decided after M1 was
+  implemented and named here only because M1 was required not to pre-empt it; M1 contains no
+  firing code and is unaffected.
 
 ## Still open — not M1's to answer
 
-- [`Q-003`](../../requirements/11-open-questions.md) — crosshair-to-ray alignment. Blocks M2.
-  M1 must not pre-empt it.
 - [`Q-002`](../../requirements/11-open-questions.md) — balance numbers, now including
   {INTERPOLATION_DELAY}, which trades smoothness against how stale remote players look. It is
   `PROPOSED`; tuning it is a constants edit (`SC-4`), not a code change.
