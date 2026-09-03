@@ -1,29 +1,60 @@
+import { readFile } from 'node:fs/promises';
+
+import { SERVER_PORT, SERVER_TICK_HZ, WS_PATH } from '#shared/constants/index.ts';
+import { loadMap } from '#shared/map/load.ts';
+
+import { createSession } from './net/connection.ts';
+import { listen } from './net/ws-transport.ts';
+import { createLoop } from './room/loop.ts';
+import { createRoom } from './room/room.ts';
+
 /**
- * Server entry point. Deliberately inert until M1.
+ * The server process (NFR-002): long-lived, stateful, and the only authority over the
+ * match (NFR-001).
  *
- * NFR-002 requires a long-lived stateful process; the WebSocket server, the room and the
- * tick loop all arrive in M1, when the protocol exists to drive them. Writing a tick loop
- * before then would only mean rewriting it.
+ * One hardcoded room, created at startup, as 08-roadmap.md assigns to M1. Matchmaking and
+ * private room codes are FR-GP-010 and FR-GP-011, in M3 -- but the room is built by a
+ * factory that takes an id and reaches for no global, so the second one that arrives then
+ * cannot observe the first (NFR-015).
  *
- * What this file does earn today is the one thing M0 cannot otherwise prove: that
- * shared/ actually resolves and runs under plain Node, not just through Vite's resolver.
- * See specs/000-m0-walking-box/research.md R2 -- tsconfig `paths` would have satisfied
- * the client and failed here, and we would not have found out until M1.
+ * Restarting this process ends every match. That is expected and documented (NFR-002); a
+ * dropped player rejoins as a new player, never a resumed one (D-009).
  */
 
-import { SERVER_TICK_HZ, TICK_DURATION_MS } from '#shared/constants/index.ts';
-import { validateInput } from '#shared/sim/validate.ts';
+const MAP_PATH = 'assets/maps/arena-01.json';
+const ROOM_ID = 'r_1';
 
-export function describeRuntime(): string {
-  const probe = validateInput({
-    move: [0, 0, 0],
-    dir: [0, 0, -1],
-    jump: false,
-    crouch: false,
-    sprint: false,
+async function main(): Promise<void> {
+  const map = loadMap(JSON.parse(await readFile(MAP_PATH, 'utf8')) as unknown);
+  const room = createRoom(ROOM_ID, map);
+
+  const { transport } = await listen(SERVER_PORT);
+
+  transport.onConnection((connection) => {
+    const session = createSession(connection, room, Date.now());
+
+    connection.onMessage((text) => {
+      session.handle(text, Date.now());
+    });
+    connection.onClose(() => {
+      // FR-GP-040: the player goes with the socket, within one tick, leaving no ghost.
+      session.disconnect();
+    });
   });
-  const shared = probe === null ? 'unreachable' : 'reachable';
-  return `bullet-proof server (inert until M1) — shared/ ${shared}, tick ${String(SERVER_TICK_HZ)} Hz / ${TICK_DURATION_MS.toFixed(2)} ms`;
+
+  const loop = createLoop(
+    () => {
+      room.tick();
+    },
+    { now: () => Date.now(), schedule: (fn, ms) => setTimeout(fn, ms) },
+  );
+  loop.start();
+
+  console.log(
+    `bullet proof — room ${ROOM_ID} on map ${map.id}, ` +
+      `ws://localhost:${String(SERVER_PORT)}${WS_PATH}, ` +
+      `${String(SERVER_TICK_HZ)} Hz`,
+  );
 }
 
-console.log(describeRuntime());
+await main();

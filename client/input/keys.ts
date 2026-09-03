@@ -1,12 +1,27 @@
-import { type Vec3, normalise } from '#shared/math/vec3.ts';
-import type { PlayerInput } from '#shared/sim/types.ts';
+import {
+  KEY_BACK,
+  KEY_CROUCH,
+  KEY_FORWARD,
+  KEY_JUMP,
+  KEY_LEFT,
+  KEY_RIGHT,
+  KEY_SPRINT,
+} from '#shared/protocol/keys.ts';
 
 /**
- * Held keys translated into simulation intent.
+ * Held browser keys translated into the NET-004 bitmask.
  *
- * Pure on purpose: the DOM listeners that maintain the held-key set live in the boot
- * shell, so the translation itself -- where the actual rules are -- stays testable
- * without a browser.
+ * This is the only half of the translation that is a browser concern, and it is the only
+ * half that lives here. What a bit *means* -- the movement vector, the normalised
+ * diagonal -- is in shared/protocol/keys.ts, because NFR-003 requires the client's
+ * prediction and the server's tick to derive it from the same code.
+ *
+ * The split matters: the client predicts from the bitmask this function returns, not from
+ * the key set it was given. Predicting from the richer local value is the classic version
+ * of this bug, and it stays invisible until someone strafes diagonally.
+ *
+ * Pure on purpose. The DOM listeners that maintain the held-key set live in the boot
+ * shell, so the rules stay testable without a browser.
  */
 
 export const KEYS = {
@@ -19,34 +34,22 @@ export const KEYS = {
   crouch: ['ControlLeft', 'ControlRight'],
 } as const;
 
+function bitIf(condition: boolean, bit: number): number {
+  return condition ? bit : 0;
+}
+
 function anyHeld(held: ReadonlySet<string>, codes: readonly string[]): boolean {
   return codes.some((code) => held.has(code));
 }
 
-function axis(held: ReadonlySet<string>, positive: string, negative: string): number {
-  return (held.has(positive) ? 1 : 0) - (held.has(negative) ? 1 : 0);
-}
-
-/**
- * Camera-relative movement intent: x strafes right, z goes forward.
- *
- * Normalised, so W+A is not faster than W. Without this, diagonal movement would be
- * sqrt(2) times quicker, which players find immediately and never stop doing.
- */
-export function movementFrom(held: ReadonlySet<string>): Vec3 {
-  return normalise([
-    axis(held, KEYS.right, KEYS.left),
-    0,
-    axis(held, KEYS.forward, KEYS.back),
-  ]);
-}
-
-export function inputFrom(held: ReadonlySet<string>, dir: Vec3): PlayerInput {
-  return {
-    move: movementFrom(held),
-    dir,
-    jump: held.has(KEYS.jump),
-    crouch: anyHeld(held, KEYS.crouch),
-    sprint: anyHeld(held, KEYS.sprint),
-  };
+export function keysFromHeld(held: ReadonlySet<string>): number {
+  return (
+    bitIf(held.has(KEYS.forward), KEY_FORWARD) |
+    bitIf(held.has(KEYS.back), KEY_BACK) |
+    bitIf(held.has(KEYS.left), KEY_LEFT) |
+    bitIf(held.has(KEYS.right), KEY_RIGHT) |
+    bitIf(held.has(KEYS.jump), KEY_JUMP) |
+    bitIf(anyHeld(held, KEYS.sprint), KEY_SPRINT) |
+    bitIf(anyHeld(held, KEYS.crouch), KEY_CROUCH)
+  );
 }
