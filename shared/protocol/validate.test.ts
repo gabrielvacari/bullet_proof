@@ -263,6 +263,8 @@ describe('parseClientMessage — input (NET-004)', () => {
           jump: false,
           crouch: false,
           sprint: false,
+          fire: false,
+          reload: false,
         }),
       ).not.toBeNull();
     }

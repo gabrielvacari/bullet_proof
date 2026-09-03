@@ -6,7 +6,7 @@ import { loadMap } from '#shared/map/load.ts';
 import { type Aabb, type GameMap, blockAabb } from '#shared/map/types.ts';
 import type { Vec3 } from '#shared/math/vec3.ts';
 
-import { step } from './step.ts';
+import { spawnedPlayer, step } from './step.ts';
 import type { PlayerInput, PlayerState } from './types.ts';
 
 /**
@@ -40,7 +40,16 @@ const HEADINGS: readonly Vec3[] = [
 ];
 
 function command(dir: Vec3, overrides: Partial<PlayerInput> = {}): PlayerInput {
-  return { move: [0, 0, 1], dir, jump: false, crouch: false, sprint: true, ...overrides };
+  return {
+    move: [0, 0, 1],
+    dir,
+    jump: false,
+    crouch: false,
+    sprint: true,
+    fire: false,
+    reload: false,
+    ...overrides,
+  };
 }
 
 function assertInside(state: PlayerState, context: string): void {
@@ -55,7 +64,7 @@ function assertInside(state: PlayerState, context: string): void {
 }
 
 function spawnState(pos: Vec3): PlayerState {
-  return { pos, vel: [0, 0, 0], grounded: true, crouching: false };
+  return { ...spawnedPlayer(pos), grounded: true };
 }
 
 describe('the player cannot leave the arena', () => {

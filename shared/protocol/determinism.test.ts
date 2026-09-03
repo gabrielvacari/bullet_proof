@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { loadMap } from '#shared/map/load.ts';
 import type { GameMap } from '#shared/map/types.ts';
 import type { Vec3 } from '#shared/math/vec3.ts';
-import { step } from '#shared/sim/step.ts';
+import { spawnedPlayer, step } from '#shared/sim/step.ts';
 import type { PlayerInput, PlayerState } from '#shared/sim/types.ts';
 
 import { decode, encode } from './encode.ts';
@@ -45,7 +45,7 @@ if (SPAWN === undefined) throw new Error('the arena has no spawn');
 const SPAWN_POS = SPAWN.pos;
 
 function start(): PlayerState {
-  return { pos: SPAWN_POS, vel: [0, 0, 0], grounded: false, crouching: false };
+  return spawnedPlayer(SPAWN_POS);
 }
 
 /**

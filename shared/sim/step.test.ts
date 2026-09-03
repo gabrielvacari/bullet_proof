@@ -16,7 +16,7 @@ import { loadMap } from '#shared/map/load.ts';
 import type { GameMap } from '#shared/map/types.ts';
 import { type Vec3, length, horizontal } from '#shared/math/vec3.ts';
 
-import { step } from './step.ts';
+import { spawnedPlayer, step } from './step.ts';
 import type { PlayerInput, PlayerState } from './types.ts';
 
 let map: GameMap;
@@ -27,7 +27,7 @@ beforeAll(() => {
 
 /** Open floor, far from every interior block. */
 function resting(pos: Vec3 = [20, 0, 20]): PlayerState {
-  return { pos, vel: [0, 0, 0], grounded: true, crouching: false };
+  return { ...spawnedPlayer(pos), grounded: true };
 }
 
 /** Looking down -Z, the Three.js default forward. */
@@ -40,6 +40,8 @@ function input(overrides: Partial<PlayerInput> = {}): PlayerInput {
     jump: false,
     crouch: false,
     sprint: false,
+    fire: false,
+    reload: false,
     ...overrides,
   };
 }
@@ -258,10 +260,8 @@ describe('FR-GP-017 — jump and gravity', () => {
   it('falls under gravity when walking off an edge', () => {
     // step-a's top is at 0.6; walking off it must start a fall.
     let state: PlayerState = {
-      pos: [-15, 0.6, 0],
-      vel: [0, 0, 0],
+      ...spawnedPlayer([-15, 0.6, 0]),
       grounded: true,
-      crouching: false,
     };
     for (let tick = 0; tick < 40; tick += 1) {
       state = step(state, input({ move: [1, 0, 0] }), map);
@@ -307,8 +307,7 @@ describe('FR-GP-018 / D-016 — crouch and jump are mutually exclusive', () => {
   it('refuses to stand up under a ceiling — collision correctness, not a game rule', () => {
     // Under the overhang, whose underside is exactly CROUCH_HEIGHT.
     const crouched: PlayerState = {
-      pos: [14, 0, 14],
-      vel: [0, 0, 0],
+      ...spawnedPlayer([14, 0, 14]),
       grounded: true,
       crouching: true,
     };
@@ -318,8 +317,7 @@ describe('FR-GP-018 / D-016 — crouch and jump are mutually exclusive', () => {
 
   it('stands up again once clear of the ceiling', () => {
     const crouched: PlayerState = {
-      pos: [20, 0, 20],
-      vel: [0, 0, 0],
+      ...spawnedPlayer([20, 0, 20]),
       grounded: true,
       crouching: true,
     };

@@ -1,10 +1,10 @@
 import {
+  MAGAZINE_SIZE,
+  PLAYER_MAX_HEALTH,
   AIR_CONTROL,
-  CROUCH_HEIGHT,
   CROUCH_SPEED,
   GRAVITY,
   JUMP_VELOCITY,
-  PLAYER_HEIGHT,
   SPRINT_FORWARD_MIN_DOT,
   SPRINT_SPEED,
   TICK_DURATION_S,
@@ -13,7 +13,7 @@ import {
 import type { GameMap } from '#shared/map/types.ts';
 import { type Vec3, add, horizontal, normalise, scale, sub } from '#shared/math/vec3.ts';
 
-import { canStand, moveAndCollide } from './collide.ts';
+import { canStand, capsuleHeight, moveAndCollide } from './collide.ts';
 import type { PlayerInput, PlayerState } from './types.ts';
 
 /**
@@ -27,9 +27,30 @@ import type { PlayerInput, PlayerState } from './types.ts';
  * There is deliberately no `dt` parameter. The timestep is TICK_DURATION_S, a constant
  * (NET-004a).
  */
+/**
+ * A player at the start of a life: full health, full magazine, nothing pending.
+ *
+ * Respawn restores exactly this (FR-GP-037, FR-GP-032), and so does joining, so the two
+ * cannot drift apart. Written as a factory rather than a frozen constant because
+ * `pos` differs every time and the rest must not be shared between players.
+ */
+export function spawnedPlayer(pos: Vec3): PlayerState {
+  return {
+    pos,
+    vel: [0, 0, 0],
+    grounded: false,
+    crouching: false,
+    health: PLAYER_MAX_HEALTH,
+    magazine: MAGAZINE_SIZE,
+    fireCooldown: 0,
+    reloadTicks: 0,
+    respawnTicks: 0,
+  };
+}
+
 export function step(state: PlayerState, input: PlayerInput, map: GameMap): PlayerState {
   const crouching = resolveCrouch(state, input, map);
-  const height = crouching ? CROUCH_HEIGHT : PLAYER_HEIGHT;
+  const height = capsuleHeight(crouching);
 
   const horizontalVel = horizontalVelocity(state, input, crouching);
   const velocity: Vec3 = [
@@ -41,6 +62,9 @@ export function step(state: PlayerState, input: PlayerInput, map: GameMap): Play
   const collided = moveAndCollide(state.pos, velocity, height, map, TICK_DURATION_S);
 
   return {
+    // Combat state passes through untouched. The weapon state machine joins step() in
+    // Phase 3; until then movement must not quietly reset a magazine or a countdown.
+    ...state,
     pos: collided.pos,
     vel: collided.vel,
     grounded: collided.grounded,

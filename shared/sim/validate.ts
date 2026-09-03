@@ -47,14 +47,29 @@ export function validateInput(value: unknown): PlayerInput | null {
   const jump = raw['jump'];
   const crouch = raw['crouch'];
   const sprint = raw['sprint'];
+  const fire = raw['fire'];
+  const reload = raw['reload'];
   if (typeof jump !== 'boolean') return null;
   if (typeof crouch !== 'boolean') return null;
   if (typeof sprint !== 'boolean') return null;
+  // fire and reload are requests, not outcomes (NET-004b). They are validated as
+  // strictly as the rest: a truthy string or a 1 is not a boolean and does not become
+  // one here.
+  if (typeof fire !== 'boolean') return null;
+  if (typeof reload !== 'boolean') return null;
 
-  return { move, dir, jump, crouch, sprint };
+  return { move, dir, jump, crouch, sprint, fire, reload };
 }
 
-const EXPECTED_KEYS: readonly string[] = ['move', 'dir', 'jump', 'crouch', 'sprint'];
+const EXPECTED_KEYS: readonly string[] = [
+  'move',
+  'dir',
+  'jump',
+  'crouch',
+  'sprint',
+  'fire',
+  'reload',
+];
 
 /**
  * Rejects extra fields as well as missing ones. An unrecognised field is either a client

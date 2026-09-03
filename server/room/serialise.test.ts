@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  MAGAZINE_SIZE,
+  PLAYER_MAX_HEALTH,
   AIR_CONTROL,
   GRAVITY,
   INTERPOLATION_DELAY,
@@ -27,6 +29,11 @@ const STANDING: PlayerState = {
   vel: [4, 5, 6],
   grounded: true,
   crouching: false,
+  health: PLAYER_MAX_HEALTH,
+  magazine: MAGAZINE_SIZE,
+  fireCooldown: 0,
+  reloadTicks: 0,
+  respawnTicks: 0,
 };
 
 /** The convention client/input/aim.ts produces: forward is -Z, yaw turns anticlockwise. */

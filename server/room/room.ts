@@ -16,7 +16,7 @@ import type {
   ServerMessage,
   SnapshotPlayer,
 } from '#shared/protocol/types.ts';
-import { step } from '#shared/sim/step.ts';
+import { spawnedPlayer, step } from '#shared/sim/step.ts';
 import type { PlayerState } from '#shared/sim/types.ts';
 
 import { clientConfig, serialisePlayer } from './serialise.ts';
@@ -170,7 +170,7 @@ export function createRoom(id: string, map: GameMap): Room {
       const player: ServerPlayer = {
         id: playerId,
         nickname: message.nickname,
-        state: { pos: spawn.pos, vel: [0, 0, 0], grounded: false, crouching: false },
+        state: spawnedPlayer(spawn.pos),
         lastDir: forwardFrom(spawn.yaw),
         lastSeq: 0,
         queue: [],
