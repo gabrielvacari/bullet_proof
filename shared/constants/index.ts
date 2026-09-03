@@ -85,6 +85,40 @@ export const DAMAGE_TORSO = 20;
 /** 10 shots to kill -- FR-GP-026. */
 export const DAMAGE_LEGS = 10;
 
+/* -------------------------------------------------------- Hit volumes ---- */
+
+/*
+ * FR-GP-027's three static primitives, every dimension a fraction of the player's
+ * *current* capsule height rather than an absolute length.
+ *
+ * One set of numbers therefore covers both stances: the head drops with the body, so a
+ * crouched player behind CROUCH_HEIGHT cover is genuinely harder to hit in the head. That
+ * is what makes crouch tactical rather than a pure downside (FR-GP-018).
+ *
+ * Two invariants hold over these, both asserted in shared/sim/hitvolume.test.ts rather
+ * than claimed here: every radius fraction times PLAYER_HEIGHT stays at or below
+ * PLAYER_RADIUS, so a volume can never protrude past the movement box and be hit through
+ * a wall; and the three volumes are contiguous from the floor to the top of the capsule,
+ * so there is no band of a player that cannot be hit.
+ */
+
+/** Head sphere centre, as a fraction of capsule height -- FR-GP-027. */
+export const HEAD_CENTRE_FRACTION = 0.93;
+/** Head sphere radius. Small enough that a head shot is a skill shot -- FR-GP-026. */
+export const HEAD_RADIUS_FRACTION = 0.07;
+/** Torso capsule top. Meets the head sphere without a gap -- FR-GP-027. */
+export const TORSO_TOP_FRACTION = 0.86;
+/** Torso capsule bottom -- the hip line, and the leg capsule's top. */
+export const TORSO_BOTTOM_FRACTION = 0.5;
+/** Torso capsule radius. Below PLAYER_RADIUS -- invariant 1. */
+export const TORSO_RADIUS_FRACTION = 0.14;
+/** Leg capsule top. Shares the torso's boundary: no gap, no overlap. */
+export const LEG_TOP_FRACTION = 0.5;
+/** Leg capsule bottom. Just above the floor, so a grazing shot still registers. */
+export const LEG_BOTTOM_FRACTION = 0.02;
+/** Leg capsule radius. Below PLAYER_RADIUS -- invariant 1. */
+export const LEG_RADIUS_FRACTION = 0.1;
+
 /* ------------------------------------------------------------------ Map ---- */
 
 /** Horizontal extent of the arena -- FR-MAP-009. */
@@ -206,3 +240,39 @@ export const SNAPSHOT_BUFFER_SIZE =
 export const SHOTS_TO_KILL_HEAD = Math.ceil(PLAYER_MAX_HEALTH / DAMAGE_HEAD);
 export const SHOTS_TO_KILL_TORSO = Math.ceil(PLAYER_MAX_HEALTH / DAMAGE_TORSO);
 export const SHOTS_TO_KILL_LEGS = Math.ceil(PLAYER_MAX_HEALTH / DAMAGE_LEGS);
+/**
+ * Ticks between permitted shots -- 3.75 at 8 rounds/s against a 30 Hz tick.
+ *
+ * Deliberately **not** an integer. fireCooldown is decremented by one each tick and
+ * incremented by this on firing, so the fractional remainder is carried rather than
+ * discarded and the long-run rate is exactly FIRE_RATE_RPS. Rounding to 4 would give
+ * 7.5 shots/s while FIRE_RATE_RPS said 8 -- a silent SC-4 failure.
+ *
+ * 3.75 and every partial sum of it are exactly representable in IEEE 754 binary, so this
+ * stays bit-identical across engines and inside NFR-003.
+ */
+export const TICKS_PER_SHOT = SERVER_TICK_HZ / FIRE_RATE_RPS;
+/** Reload duration in ticks -- 60. Rounded up, so it can never come in short. */
+export const RELOAD_TICKS = Math.ceil(RELOAD_TIME / TICK_DURATION_MS);
+/** Respawn delay in ticks -- 90. Rounded up, for the same reason. */
+export const RESPAWN_TICKS = Math.ceil(RESPAWN_DELAY / TICK_DURATION_MS);
+/**
+ * MIN_SPAWN_DISTANCE squared -- 225. Spawn selection compares squared distances, so it
+ * needs no Math.sqrt at all (FR-GP-038).
+ */
+export const MIN_SPAWN_DISTANCE_SQ = MIN_SPAWN_DISTANCE * MIN_SPAWN_DISTANCE;
+/**
+ * How far the aim cast runs -- WEAPON_RANGE plus the camera-to-eye distance.
+ *
+ * ADR-0002 starts the aim cast at the nominal camera, which sits behind the eye, so it
+ * must run further than WEAPON_RANGE to guarantee a focus point at least WEAPON_RANGE
+ * away from the eye itself. Derived from CAMERA_OFFSET so that moving the camera cannot
+ * silently shorten the weapon.
+ */
+export const AIM_CAST_RANGE =
+  WEAPON_RANGE +
+  Math.sqrt(
+    CAMERA_OFFSET[0] * CAMERA_OFFSET[0] +
+      (CAMERA_OFFSET[1] - EYE_HEIGHT) * (CAMERA_OFFSET[1] - EYE_HEIGHT) +
+      CAMERA_OFFSET[2] * CAMERA_OFFSET[2],
+  );
