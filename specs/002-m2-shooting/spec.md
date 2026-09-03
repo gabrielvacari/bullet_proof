@@ -4,7 +4,7 @@
 
 **Created**: 2026-08-22
 
-**Status**: Planned — **blocked**. See [Gates](#gates) before starting any implementation.
+**Status**: **Unblocked** as of 2026-09-02 — both gates in [Gates](#gates) are open. Implementation may start.
 
 **Demo criterion**: Two players can kill each other and respawn.
 

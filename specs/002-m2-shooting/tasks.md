@@ -13,17 +13,18 @@ implementation they cover, and must fail first.
 **Organization**: grouped by the three user stories in [spec.md](spec.md), so each is
 independently deliverable and testable.
 
-> ## ⛔ Nothing here may be started yet
+> ## ✅ Both gates are open — 2026-09-02
 >
-> M2 is behind two gates ([plan.md § Gates](plan.md#gates)):
+> M2 was behind two gates ([plan.md § Gates](plan.md#gates)), and neither is shut any more:
 >
-> 1. **M1's demo criterion must be met** — Constitution Principle V.
-> 2. **[`Q-003`](../../requirements/11-open-questions.md#q-003) must land as an ADR** before any
->    firing code exists.
+> 1. ~~**M1's demo criterion must be met**~~ — confirmed by the project owner and tagged
+>    `v0.2.0`. Constitution Principle V is satisfied.
+> 2. ~~**[`Q-003`] must land as an ADR**~~ — landed as
+>    [ADR-0002](../../docs/adr/0002-the-firing-ray-runs-from-the-eye-to-the-aim-point.md).
 >
-> **The numbering jumps from `T030` to `T101` on purpose.** Everything numbered `T1xx` is behind
-> Gate 2. `T001`–`T030` are behind Gate 1 only, which is why roughly two thirds of M2 can be built
-> while the ADR is still being decided.
+> **The numbering jumps from `T030` to `T101` on purpose.** It recorded which tasks were behind
+> Gate 2 while the ADR was pending. The split no longer gates anything, but the numbers are kept
+> as they were rather than renumbered, so that every reference to a task id stays valid.
 
 ## Format: `[ID] [P?] [Story] Description`
 
@@ -47,7 +48,7 @@ of the way before anyone is mid-implementation waiting on them.
 **None of these is a code task.** Each is a check or a decision, and each blocks everything after
 it.
 
-- [ ] T001 Verify **Gate 1**: M1's demo criterion in [08-roadmap.md](../../requirements/08-roadmap.md) is genuinely met and `v0.2.0` is tagged on `main` — two browsers see each other move smoothly, with no remote-player jitter (Constitution Principle V)
+- [x] T001 Verify **Gate 1**: M1's demo criterion in [08-roadmap.md](../../requirements/08-roadmap.md) is genuinely met and `v0.2.0` is tagged on `main` — two browsers see each other move smoothly, with no remote-player jitter (Constitution Principle V)
 - [x] T002 Verify every row of [plan.md § Dependencies on M1](plan.md#dependencies-on-m1) exists, in particular that the snapshot builder can emit a **per-recipient** `am` field and does not serialise one JSON string for every socket (`NET-009`)
 - [x] T003 ⛔ **Gate 2**: the project owner decides [`Q-003`](../../requirements/11-open-questions.md#q-003) from [research.md § R1](research.md#r1--where-does-the-firing-ray-originate-q-003--blocking) and merges the ADR into `docs/adr/`; add it to [`docs/adr/README.md`](../../docs/adr/README.md)'s index, remove that file's "Waiting to be written" paragraph, and delete `Q-003` from `requirements/11-open-questions.md`
 - [x] T004 With the project owner's approval, add the thirteen constants from [data-model.md § New constants](data-model.md#new-constants) to `requirements/07-constants.md` — the eight hit-volume fractions in the Weapon or Player section, the five derived values under "Derived values — do not hardcode" (Constitution Principle IV)
@@ -75,8 +76,8 @@ shapes the raycast has been taken by the person entitled to take it.
 >
 > `T005` — `FR-GP-032` and `FR-GP-038` both read `REQUIRED`.
 >
-> `T001` needs a human at two browsers and a `v0.2.0` tag. Constitution Principle V keeps every
-> task below this line shut until then — including all of Phase 2.
+> `T001` **closed 2026-09-02**: the project owner walked the demo and confirmed it, and `v0.1.0`
+> and `v0.2.0` are tagged on `main`. Phase 2 may begin.
 
 ---
 

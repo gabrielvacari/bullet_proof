@@ -159,8 +159,8 @@ behind the cover block.
 - [x] T051 [P] Create `shared/no-literals.test.ts` scanning `shared/**` for numeric literals outside `shared/constants`, allowing only `0`, `1`, `2` and array indices — verifies `M0-7` and `SC-4` mechanically instead of by review
 - [x] T052 [P] Close [Q-008](../../requirements/11-open-questions.md) in `requirements/11-open-questions.md` now that T009 has landed
 - [x] T053 Run `npm run verify` and confirm `shared/sim`, `shared/map` and `shared/protocol` all report 100% with no threshold relaxed
-- [ ] T054 Walk every manual check in [quickstart.md](quickstart.md) — `M0-1`, `M0-5`, `M0-8`, `M0-10`, and the manual half of `M0-11`
-- [ ] T055 Confirm all eleven criteria in [spec.md § Success Criteria](spec.md#success-criteria) hold, then hand back to the project owner to tag `v0.1.0`
+- [x] T054 Walk every manual check in [quickstart.md](quickstart.md) — `M0-1`, `M0-5`, `M0-8`, `M0-10`, and the manual half of `M0-11`
+- [x] T055 Confirm all eleven criteria in [spec.md § Success Criteria](spec.md#success-criteria) hold, then hand back to the project owner to tag `v0.1.0`
 
 ---
 

@@ -4,7 +4,7 @@
 
 **Created**: 2026-08-22
 
-**Status**: Implemented — automated criteria green; `OQ-A` and `OQ-B` both closed by the owner; the manual criteria still await them
+**Status**: **Complete.** Automated criteria green, `OQ-A` and `OQ-B` both closed by the owner, manual criteria confirmed on 2026-09-02, tagged `v0.2.0`.
 
 **Demo criterion**: Two browsers see each other move smoothly.
 
