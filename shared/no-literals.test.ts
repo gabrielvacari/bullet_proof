@@ -48,6 +48,25 @@ const FILES = sourceFiles('shared')
   // The constants module is the one place a number is allowed to be written down.
   .filter((path) => !path.startsWith(join('shared', 'constants')));
 
+/**
+ * The scan finds whatever is on disk, which means a module that stopped being scanned --
+ * moved, renamed, or dropped by a directory the walk no longer descends into -- would
+ * make this file quietly weaker while still reporting green. Naming the combat modules
+ * turns that silent loss into a failure.
+ */
+const COMBAT_MODULES = [
+  join('shared', 'math', 'ray.ts'),
+  join('shared', 'sim', 'hitvolume.ts'),
+  join('shared', 'sim', 'damage.ts'),
+  join('shared', 'sim', 'spawn.ts'),
+];
+
+describe('the combat modules are actually scanned', () => {
+  it.each(COMBAT_MODULES)('%s is in the scanned set', (module) => {
+    expect(FILES).toContain(module);
+  });
+});
+
 describe.each(FILES)('%s contains no gameplay literal', (path) => {
   it('writes every number by name', () => {
     const offenders: string[] = [];
