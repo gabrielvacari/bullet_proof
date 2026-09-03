@@ -74,6 +74,17 @@ missing. Add it rather than accepting the manual check.
 
 Four criteria need eyes and two browsers.
 
+> **Two of `M1-1`'s halves no longer do.** `server/integration.test.ts` drives the real server
+> with two real clients and replays what the second one received through the production
+> interpolation module: it asserts that every rendered frame advances (so motion is subdivided
+> rather than stepped at {SNAPSHOT_HZ}) and that a player sending nothing is drawn _exactly_
+> still. `M1-6`'s ghost check is covered there too. What is left below is the part that is a
+> judgement — whether it **looks** right — plus everything needing latency or a browser.
+>
+> Expect the remote player's rendered speed to alternate in a 1:2 ratio every {SNAPSHOT_INTERVAL_MS} ms.
+> That is not a bug to hunt: {SERVER_TICK_HZ} / {SNAPSHOT_HZ} is 1.5, so consecutive snapshots
+> are one tick apart and then two. The motion is continuous; its velocity is not constant.
+
 ### `M1-1` — the demo criterion
 
 Two windows, both connected. In window A, walk a circuit of the arena: walk, sprint forward,
